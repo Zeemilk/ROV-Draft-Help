@@ -1,3 +1,11 @@
+:root {
+    --hero-size: 80px;
+    --hero-gap: 10px;
+    --touch-target-size: 44px;
+    --border-radius: 4px;
+    --transition-duration: 0.2s;
+}
+
 body {
     margin: 0;
     font-family: 'Noto Sans Thai', 'Segoe UI', Arial, sans-serif;
@@ -5,6 +13,121 @@ body {
     background-size: cover;       
     background-repeat: no-repeat; 
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Device-specific styles */
+.mobile .hero-wrapper img {
+    width: var(--hero-size) !important;
+    height: var(--hero-size) !important;
+}
+
+.tablet .hero-wrapper img {
+    width: calc(var(--hero-size) + 10px) !important;
+    height: calc(var(--hero-size) + 10px) !important;
+}
+
+.touch-device .hero-choose,
+.touch-device .hero-wrapper img,
+.touch-device #lane-filter button {
+    min-width: var(--touch-target-size);
+    min-height: var(--touch-target-size);
+}
+
+/* Loading State */
+.loading-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Error State */
+.error-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.error-content {
+    background: #2c2c2c;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #ff4444;
+    max-width: 400px;
+    margin: 20px;
+}
+
+.error-content h3 {
+    color: #ff4444;
+    margin: 0 0 15px 0;
+    font-size: 24px;
+}
+
+.error-content p {
+    color: white;
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.error-content button {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.error-content button:hover {
+    background: linear-gradient(45deg, #ff5252, #d63031);
+    transform: scale(1.05);
 }
 .ban-pick {
     display: flex;
@@ -316,32 +439,382 @@ img.disabled {
     font-weight: bold;
 }
 
-/* ปรับปรุง Mobile responsive */
-@media screen and (max-width: 768px) {
-    /* ปรับขนาดฮีโร่ในแกลเลอรี่ให้ใหญ่ขึ้น */
-    .hero-wrapper img {
-        width: 70px !important;
-        height: 70px !important;
+/* Responsive Design for All Platforms */
+
+/* Large Desktop (1200px+) */
+@media screen and (min-width: 1200px) {
+    .game-container {
+        max-width: 1400px;
+        margin: 0 auto;
     }
     
-    /* ปรับขนาดปุ่ม filter ให้ใหญ่ขึ้น */
+    .ban-pick {
+        padding: 20px 40px;
+    }
+    
+    .hero-choose {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .hero-wrapper img {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+/* Desktop (992px - 1199px) */
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+    .ban-pick {
+        padding: 15px 30px;
+    }
+    
+    .hero-choose {
+        width: 75px;
+        height: 75px;
+    }
+    
+    .hero-wrapper img {
+        width: 85px;
+        height: 85px;
+    }
+}
+
+/* Tablet Landscape (768px - 991px) */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .ban-pick {
+        padding: 10px 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .team-section {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .team-label1, .team-label2 {
+        font-size: 20px;
+        text-align: center;
+    }
+    
+    #team1-container, #team2-container {
+        justify-content: center;
+    }
+    
+    .hero-choose {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .hero-wrapper img {
+        width: 75px;
+        height: 75px;
+    }
+    
+    .content {
+        padding: 15px;
+    }
+    
+    #lane-filter {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+    }
+    
     #lane-filter button {
-        padding: 12px 8px;
-        font-size: 14px;
-        margin-bottom: 10px;
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+}
+
+/* Tablet Portrait (576px - 767px) */
+@media screen and (min-width: 576px) and (max-width: 767px) {
+    .ban-pick {
+        padding: 8px 15px;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .team-section {
+        width: 100%;
+        margin-bottom: 12px;
+    }
+    
+    .team-label1, .team-label2 {
+        font-size: 18px;
+        text-align: center;
+    }
+    
+    #team1-container, #team2-container {
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .hero-choose {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .hero-wrapper img {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .content {
+        padding: 12px;
+        gap: 15px;
+    }
+    
+    #lane-filter {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 6px;
+    }
+    
+    #lane-filter button {
+        padding: 8px 6px;
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+    
+    .stat-text {
+        font-size: 16px;
     }
     
     .mobile-btn {
-        padding: 12px 10px;
-        font-size: 16px;
-        min-height: 55px;
+        padding: 10px 8px;
+        font-size: 14px;
+        min-height: 50px;
     }
     
     .btn-icon { 
-        font-size: 20px; 
+        font-size: 18px; 
     }
     
     .btn-text { 
+        font-size: 12px; 
+    }
+}
+
+/* Mobile Landscape (480px - 575px) */
+@media screen and (min-width: 480px) and (max-width: 575px) {
+    .ban-pick {
+        padding: 6px 10px;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .team-section {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .team-label1, .team-label2 {
+        font-size: 16px;
+        text-align: center;
+    }
+    
+    #team1-container, #team2-container {
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    .hero-choose {
+        width: 55px;
+        height: 55px;
+    }
+    
+    .hero-wrapper img {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .content {
+        padding: 10px;
+        gap: 12px;
+    }
+    
+    #lane-filter {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        gap: 4px;
+    }
+    
+    #lane-filter button {
+        padding: 6px 4px;
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+    
+    .stat-text {
+        font-size: 14px;
+    }
+    
+    .mobile-btn {
+        padding: 8px 6px;
+        font-size: 12px;
+        min-height: 45px;
+    }
+    
+    .btn-icon { 
+        font-size: 16px; 
+    }
+    
+    .btn-text { 
+        font-size: 10px; 
+    }
+}
+
+/* Mobile Portrait (320px - 479px) */
+@media screen and (max-width: 479px) {
+    .ban-pick {
+        padding: 4px 8px;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .team-section {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    
+    .team-label1, .team-label2 {
+        font-size: 14px;
+        text-align: center;
+    }
+    
+    #team1-container, #team2-container {
+        justify-content: center;
+        gap: 4px;
+    }
+    
+    .hero-choose {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .hero-wrapper img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .content {
+        padding: 8px;
+        gap: 10px;
+    }
+    
+    #lane-filter {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 3px;
+    }
+    
+    #lane-filter button {
+        padding: 5px 3px;
+        font-size: 10px;
+        margin-bottom: 3px;
+    }
+    
+    .stat-text {
+        font-size: 12px;
+    }
+    
+    .mobile-btn {
+        padding: 6px 4px;
+        font-size: 10px;
+        min-height: 40px;
+    }
+    
+    .btn-icon { 
         font-size: 14px; 
+    }
+    
+    .btn-text { 
+        font-size: 9px; 
+    }
+    
+    .hero-select {
+        padding: 8px;
+    }
+    
+    .display {
+        padding: 8px;
+    }
+    
+    .stat-row {
+        gap: 10px;
+    }
+    
+    .warning-container {
+        margin-top: 8px;
+    }
+    
+    .cc-warning {
+        font-size: 12px;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    .hero-choose {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .hero-wrapper img {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    #lane-filter button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .mobile-btn {
+        min-height: 44px;
+    }
+    
+    .hero-choose:hover,
+    .hero-wrapper img:hover,
+    #lane-filter button:hover {
+        transform: none;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .hero-choose img,
+    .hero-wrapper img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .hero-select {
+        background: rgba(0, 0, 0, 0.9);
+    }
+    
+    .display {
+        background: rgba(0, 0, 0, 0.9);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .loading-spinner {
+        animation: none;
+    }
+    
+    .mic-button {
+        animation: none;
+    }
+    
+    * {
+        transition: none !important;
+        animation: none !important;
     }
 }
