@@ -28,6 +28,9 @@ class DraftHelper {
             // Detect device type and set appropriate settings
             this.detectDeviceType();
             
+            // Initialize orientation checking
+            this.initOrientationCheck();
+            
             await this.loadHeroData();
             this.createInitialGame();
             this.hideLoadingState();
@@ -60,6 +63,69 @@ class DraftHelper {
         if (isTouchDevice) {
             document.body.classList.add('touch-device');
         }
+    }
+
+    /**
+     * Check and enforce landscape orientation
+     */
+    checkOrientation() {
+        const isPortrait = window.innerHeight > window.innerWidth;
+        
+        if (isPortrait) {
+            this.showOrientationMessage();
+        } else {
+            this.hideOrientationMessage();
+        }
+    }
+
+    /**
+     * Show orientation message
+     */
+    showOrientationMessage() {
+        let messageDiv = document.querySelector('.orientation-message');
+        
+        if (!messageDiv) {
+            messageDiv = document.createElement('div');
+            messageDiv.className = 'orientation-message';
+            messageDiv.innerHTML = `
+                <div class="orientation-icon">📱</div>
+                <div class="orientation-text">กรุณาหมุนโทรศัพท์เป็นแนวนอน</div>
+                <div class="orientation-subtext">เพื่อประสบการณ์การใช้งานที่ดีที่สุด</div>
+            `;
+            document.body.appendChild(messageDiv);
+        }
+        
+        messageDiv.classList.add('show');
+    }
+
+    /**
+     * Hide orientation message
+     */
+    hideOrientationMessage() {
+        const messageDiv = document.querySelector('.orientation-message');
+        if (messageDiv) {
+            messageDiv.classList.remove('show');
+        }
+    }
+
+    /**
+     * Initialize orientation checking
+     */
+    initOrientationCheck() {
+        // Check on load
+        this.checkOrientation();
+        
+        // Check on resize
+        window.addEventListener('resize', () => {
+            this.checkOrientation();
+        });
+        
+        // Check on orientation change
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                this.checkOrientation();
+            }, 100);
+        });
     }
 
     /**
