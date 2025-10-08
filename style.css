@@ -587,6 +587,55 @@ img.disabled {
         color: white;
         transform: scale(0.9);
     }
+    
+    /* Filter checkboxes for mobile */
+    .filter-group {
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .filter-group h4 {
+        font-size: 12px;
+    }
+    
+    .filter-checkbox {
+        font-size: 11px;
+        margin: 4px 6px 4px 0;
+    }
+    
+    .filter-checkbox input[type="checkbox"] {
+        width: 14px;
+        height: 14px;
+        transform: scale(1.2);
+    }
+    
+    /* Toggle desktop/mobile filter */
+    .desktop-filter {
+        display: none;
+    }
+    
+    .mobile-filter-menu {
+        display: block;
+    }
+    
+    /* Adjust mobile filter menu buttons */
+    .filter-menu-btn {
+        padding: 8px 12px;
+    }
+    
+    .menu-icon {
+        font-size: 16px;
+    }
+    
+    .menu-text {
+        font-size: 12px;
+    }
+    
+    .menu-count {
+        font-size: 11px;
+        min-width: 20px;
+        padding: 1px 6px;
+    }
 }
 
 @media screen and (max-width: 479px) {
@@ -631,6 +680,359 @@ img.disabled {
         color: white;
         transform: scale(0.9);
     }
+    
+    /* Filter checkboxes for small screens */
+    .filter-group {
+        padding: 6px;
+        margin-bottom: 8px;
+    }
+    
+    .filter-group h4 {
+        font-size: 11px;
+    }
+    
+    .filter-checkbox {
+        font-size: 10px;
+        margin: 3px 4px 3px 0;
+    }
+    
+    .filter-checkbox input[type="checkbox"] {
+        width: 12px;
+        height: 12px;
+        transform: scale(1.3);
+    }
+    
+    /* Toggle desktop/mobile filter */
+    .desktop-filter {
+        display: none;
+    }
+    
+    .mobile-filter-menu {
+        display: block;
+    }
+    
+    /* Adjust mobile filter menu buttons for small screens */
+    .filter-menu-btn {
+        padding: 6px 10px;
+    }
+    
+    .menu-icon {
+        font-size: 14px;
+    }
+    
+    .menu-text {
+        font-size: 11px;
+    }
+    
+    .menu-count {
+        font-size: 10px;
+        min-width: 18px;
+        padding: 1px 5px;
+    }
+    
+    .filter-menu-content {
+        width: 95%;
+            max-height: 90vh;
+    }
+    
+    .menu-header {
+        padding: 12px 15px;
+    }
+    
+    .menu-header h4 {
+        font-size: 16px;
+    }
+    
+    .menu-options {
+        padding: 15px;
+        gap: 8px;
+        grid-template-columns: 1fr 1fr;
+        max-height: calc(90vh - 60px);
+    }
+    
+    .menu-options .filter-checkbox {
+        padding: 6px;
+        font-size: 11px;
+        min-height: 35px;
+    }
+}
+
+/* Desktop and Mobile Filter Toggle */
+.desktop-filter {
+    display: block;
+}
+
+.mobile-filter-menu {
+    display: none;
+}
+
+/* Force mobile menu to show on mobile devices */
+@media screen and (max-width: 768px) {
+    .desktop-filter {
+        display: none !important;
+    }
+    
+    .mobile-filter-menu {
+        display: block !important;
+    }
+}
+
+/* Filter Checkboxes */
+.filter-group {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-group h4 {
+    color: #fff;
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-checkbox {
+    display: inline-flex;
+    align-items: center;
+    margin: 5px 8px 5px 0;
+    cursor: pointer;
+    font-size: 12px;
+    color: #ccc;
+    transition: color 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.filter-checkbox:hover {
+    color: #fff;
+}
+
+.filter-checkbox input[type="checkbox"] {
+    margin-right: 6px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #4ecdc4;
+    transform: scale(1.1);
+}
+
+.filter-checkbox input[type="checkbox"]:checked {
+    accent-color: #4ecdc4;
+}
+
+.filter-checkbox:has(input:checked) {
+    color: #4ecdc4;
+    font-weight: bold;
+}
+
+/* Mobile Filter Menu Styles */
+.filter-menu-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.filter-menu-btn {
+    flex: 1;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.filter-menu-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.filter-menu-btn:active {
+    transform: translateY(0);
+}
+
+.menu-icon {
+    font-size: 18px;
+}
+
+.menu-text {
+    font-size: 14px;
+}
+
+.menu-count {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    min-width: 24px;
+    text-align: center;
+}
+
+/* Mobile Filter Menu Overlay */
+.filter-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.filter-menu-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+.filter-menu-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    width: 90%;
+    max-width: 400px;
+    max-height: 85vh;
+    background: #2c2c2c;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #444;
+    z-index: 10001;
+    display: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.filter-menu-content.show {
+    display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid #444;
+}
+
+.menu-header h4 {
+    color: white;
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.menu-close {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.menu-close:hover {
+    background: #444;
+    color: white;
+}
+
+.menu-close:active {
+    background: #555;
+    transform: scale(0.9);
+}
+
+.menu-options {
+    padding: 20px;
+    max-height: calc(85vh - 80px);
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    /* เพิ่ม scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: #4ecdc4 #2c2c2c;
+}
+
+.menu-options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.menu-options::-webkit-scrollbar-track {
+    background: #2c2c2c;
+    border-radius: 3px;
+}
+
+.menu-options::-webkit-scrollbar-thumb {
+    background: #4ecdc4;
+    border-radius: 3px;
+}
+
+.menu-options::-webkit-scrollbar-thumb:hover {
+    background: #26a69a;
+}
+
+/* Mobile touch scrolling improvements */
+.menu-options {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* Ensure proper scrolling on mobile */
+@media screen and (max-width: 768px) {
+    .filter-menu-content {
+        max-height: 90vh;
+    }
+    
+    .menu-options {
+        max-height: calc(90vh - 80px);
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+.menu-options .filter-checkbox {
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin: 0;
+    transition: all 0.2s ease;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 40px;
+}
+
+.menu-options .filter-checkbox:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Responsive Design for All Platforms */

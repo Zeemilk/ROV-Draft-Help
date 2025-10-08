@@ -246,7 +246,7 @@ class DraftHelper {
 
         const gallery = gameWrapper.querySelector("#hero-gallery");
         const chooseBoxes = gameWrapper.querySelectorAll(".hero-choose");
-        const filterButtons = gameWrapper.querySelectorAll('#lane-filter button');
+        const filterButtons = gameWrapper.querySelectorAll('#lane-filter input[type="checkbox"]');
         const searchInput = gameWrapper.querySelector(`#hero-search-${index}`);
         
         const gameState = {
@@ -272,6 +272,9 @@ class DraftHelper {
         if (searchInput) {
             this.bindSearchEvents(searchInput, gallery, gameState);
         }
+
+        // Mobile filter menu
+        this.bindMobileMenuEvents(gameWrapper, gallery, gameState);
 
         // Mobile quick buttons
         this.addMobileQuickButtons(gameWrapper, index);
@@ -413,7 +416,23 @@ class DraftHelper {
         }
         
         // Filter heroes from weakness list
-        const filtered = this.heroDataList.filter(h => weaknessList.includes(h.Hero));
+        const filtered = this.heroDataList.filter(h => {
+            // Check if hero name is in weakness list
+            if (weaknessList.includes(h.Hero)) {
+                return true;
+            }
+            
+            // Check if role is in weakness list (case insensitive)
+            if (h.Role && weaknessList.some(weakness => 
+                h.Role.toLowerCase().includes(weakness.toLowerCase()) ||
+                weakness.toLowerCase().includes(h.Role.toLowerCase())
+            )) {
+                return true;
+            }
+            
+            return false;
+        });
+        
         filtered.sort((a, b) => a.Hero.localeCompare(b.Hero));
         
         return [...result, ...filtered];
@@ -422,42 +441,46 @@ class DraftHelper {
     /**
      * Bind filter button events
      */
-    bindFilterButtonEvents(button, gallery, gameState) {
-        const handleFilterClick = (e) => {
+    bindFilterButtonEvents(checkbox, gallery, gameState) {
+        const handleFilterChange = (e) => {
             e.preventDefault();
             e.stopPropagation();
             
-            const lane = button.dataset.lane;
-            const type = button.dataset.type;
-            const isActive = button.classList.toggle("active");
+            const lane = checkbox.dataset.lane;
+            const type = checkbox.dataset.type;
             
             if (lane) {
-                isActive ? gameState.selectedLanes.add(lane) : gameState.selectedLanes.delete(lane);
+                checkbox.checked ? gameState.selectedLanes.add(lane) : gameState.selectedLanes.delete(lane);
             }
             if (type) {
-                isActive ? gameState.selectedTypes.add(type) : gameState.selectedTypes.delete(type);
+                checkbox.checked ? gameState.selectedTypes.add(type) : gameState.selectedTypes.delete(type);
             }
             
+            this.updateMobileMenuCounts(gameState);
             this.filterAndShow(gallery, gameState);
         };
         
-        // Add both click and touch events
-        button.addEventListener('click', handleFilterClick);
-        button.addEventListener('touchend', handleFilterClick);
+        // Add change event for checkbox
+        checkbox.addEventListener('change', handleFilterChange);
         
-        // Add touch feedback
-        button.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            button.style.transform = 'scale(0.95)';
-            button.style.opacity = '0.8';
-        });
-        
-        button.addEventListener('touchend', () => {
-            setTimeout(() => {
-                button.style.transform = 'scale(1)';
-                button.style.opacity = '1';
-            }, 150);
-        });
+        // Add touch events for mobile (only if touch is supported)
+        if ('ontouchstart' in window) {
+            checkbox.addEventListener('touchstart', (e) => {
+                if (e.cancelable) {
+                    e.preventDefault();
+                }
+                e.stopPropagation();
+            });
+            
+            checkbox.addEventListener('touchend', (e) => {
+                if (e.cancelable) {
+                    e.preventDefault();
+                }
+                e.stopPropagation();
+                checkbox.checked = !checkbox.checked;
+                handleFilterChange(e);
+            });
+        }
     }
 
     /**
@@ -473,6 +496,114 @@ class DraftHelper {
                 this.filterAndShow(gallery, gameState);
             }, 300);
         });
+    }
+
+    /**
+     * Bind mobile menu events
+     */
+    bindMobileMenuEvents(gameWrapper, gallery, gameState) {
+        const mobileMenuButtons = gameWrapper.querySelectorAll('.filter-menu-btn');
+        const mobileMenuContents = gameWrapper.querySelectorAll('.filter-menu-content');
+        const mobileMenuCloses = gameWrapper.querySelectorAll('.menu-close');
+        
+        console.log('Mobile menu elements found:', {
+            buttons: mobileMenuButtons.length,
+            contents: mobileMenuContents.length,
+            closes: mobileMenuCloses.length
+        });
+        
+        // Menu button events
+        mobileMenuButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const targetId = btn.dataset.target;
+                const targetMenu = gameWrapper.querySelector(`#${targetId}`);
+                
+                console.log('Menu button clicked:', targetId, targetMenu);
+                
+                // Close all other menus
+                mobileMenuContents.forEach(menu => {
+                    if (menu !== targetMenu) {
+                        menu.classList.remove('show');
+                    }
+                });
+                
+                // Toggle current menu
+                targetMenu.classList.toggle('show');
+            });
+            
+            // Touch events for mobile (only if touch is supported)
+            if ('ontouchstart' in window) {
+                btn.addEventListener('touchstart', (e) => {
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    e.stopPropagation();
+                });
+                
+                btn.addEventListener('touchend', (e) => {
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    e.stopPropagation();
+                    btn.click();
+                });
+            }
+        });
+        
+        // Close button events
+        mobileMenuCloses.forEach(closeBtn => {
+            closeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const menu = closeBtn.closest('.filter-menu-content');
+                menu.classList.remove('show');
+            });
+            
+            // Touch events for mobile (only if touch is supported)
+            if ('ontouchstart' in window) {
+                closeBtn.addEventListener('touchstart', (e) => {
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    e.stopPropagation();
+                });
+                
+                closeBtn.addEventListener('touchend', (e) => {
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    e.stopPropagation();
+                    closeBtn.click();
+                });
+            }
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.mobile-filter-menu')) {
+                mobileMenuContents.forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+    }
+
+    /**
+     * Update mobile menu counts
+     */
+    updateMobileMenuCounts(gameState) {
+        const laneCount = gameState.selectedLanes.size;
+        const typeCount = gameState.selectedTypes.size;
+        
+        const laneCountEl = document.querySelector('#lane-count');
+        const typeCountEl = document.querySelector('#type-count');
+        
+        if (laneCountEl) laneCountEl.textContent = laneCount;
+        if (typeCountEl) typeCountEl.textContent = typeCount;
     }
 
     /**
@@ -510,9 +641,11 @@ class DraftHelper {
             case 'dulability': return Number(hero.Dulability) >= 2;
             case 'waveclear': return hero.Ability && hero.Ability.toLowerCase().includes("wave");
             case 'hardlock': return hero.Ability && hero.Ability.toLowerCase().includes("hardlock");
+            case 'lock': return hero.Ability && hero.Ability.toLowerCase().includes("lock");
             case 'sight': return hero.Ability && hero.Ability.toLowerCase().includes("sight");
             case 'push': return hero.Ability && hero.Ability.toLowerCase().includes("push");
             case 'hook': return hero.Ability && hero.Ability.toLowerCase().includes("hook");
+            case 'charge': return hero.Ability && hero.Ability.toLowerCase().includes("charge");
             case 'tierS': return hero.Tier && hero.Tier.toUpperCase().includes("S");
             case 'tierA': return hero.Tier && hero.Tier.toUpperCase().includes("A");
             default: return true;
@@ -1024,23 +1157,92 @@ class DraftHelper {
             <div class="content" id="content-0">
                 <div class="hero-select">
                     <div id="lane-filter" style="margin-bottom: 10px;">
-                        <button data-lane="Abyssal">Abyssal</button>
-                        <button data-lane="Support">Support</button>
-                        <button data-lane="Mid">Mid</button>
-                        <button data-lane="Jungle">Jungle</button>
-                        <button data-lane="DarkSlayer">Dark</button>
-                        <button data-type="Early">ต้น</button>
-                        <button data-type="Late">เลท</button>
-                        <button data-type="burst">เบิร์ส</button>
-                        <button data-type="cc">CC</button>
-                        <button data-type="dulability">อึด</button>
-                        <button data-type="waveclear">Wave</button>
-                        <button data-type="hardlock">จับตาย</button>
-                        <button data-type="sight">เปิดแมพ</button>
-                        <button data-type="push">ผลัก</button>
-                        <button data-type="hook">เกี่ยว</button>
-                        <button data-type="tierS">S</button>
-                        <button data-type="tierA">A</button>
+                        <!-- Desktop Filter -->
+                        <div class="desktop-filter">
+                            <div class="filter-group">
+                                <h4>Lane:</h4>
+                                <label class="filter-checkbox"><input type="checkbox" data-lane="Abyssal"> Abyssal</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-lane="Support"> Support</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-lane="Mid"> Mid</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-lane="Jungle"> Jungle</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-lane="DarkSlayer"> Dark</label>
+                            </div>
+                            <div class="filter-group">
+                                <h4>Type:</h4>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="Early"> ต้น</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="Late"> เลท</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="burst"> เบิร์ส</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="cc"> CC</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="dulability"> แทงค์</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="waveclear"> เวฟเคลียร์</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="hardlock"> จับตาย</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="lock"> ล็อก</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="sight"> เปิดแมพ</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="push"> ผลัก</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="hook"> ดึง</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="charge"> ไถ</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="tierS"> แรงค์ S</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="tierA"> แรงค์ A</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Mobile Filter Menu -->
+                        <div class="mobile-filter-menu">
+                            <div class="filter-menu-bar">
+                                <button class="filter-menu-btn" data-target="lane-menu">
+                                    <span class="menu-icon">🎯</span>
+                                    <span class="menu-text">Lane</span>
+                                    <span class="menu-count" id="lane-count">0</span>
+                                </button>
+                                <button class="filter-menu-btn" data-target="type-menu">
+                                    <span class="menu-icon">⚡</span>
+                                    <span class="menu-text">Type</span>
+                                    <span class="menu-count" id="type-count">0</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Lane Menu -->
+                            <div class="filter-menu-content" id="lane-menu">
+                                <div class="menu-header">
+                                    <h4>Lane Filter</h4>
+                                    <button class="menu-close">&times;</button>
+                                </div>
+                                <div class="menu-options">
+                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Abyssal"> Abyssal</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Support"> Support</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Mid"> Mid</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Jungle"> Jungle</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-lane="DarkSlayer"> Dark</label>
+                                </div>
+                            </div>
+                            
+                            <!-- Type Menu -->
+                            <div class="filter-menu-content" id="type-menu">
+                                <div class="menu-header">
+                                    <h4>Type Filter</h4>
+                                    <button class="menu-close">&times;</button>
+                                </div>
+                                <div class="menu-options">
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="Early"> ต้น</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="Late"> เลท</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="burst"> เบิร์ส</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="cc"> CC</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="dulability"> แทงค์</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="waveclear"> Wave</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="hardlock"> จับตาย</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="lock"> ล็อก</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="sight"> เปิดแมพ</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="push"> ผลัก</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="hook"> ดึง</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="charge"> ไถ</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="tierS"> S</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="tierA"> A</label>
+                                </div>
+                            </div>
+                            
+                            <!-- Overlay for mobile menu -->
+                            <div class="filter-menu-overlay" id="filter-overlay"></div>
+                        </div>
                     </div>
                     <input type="text" id="hero-search-0" placeholder="ค้นหาชื่อฮีโร่..." style="margin-bottom:10px;width:100%;max-width:300px;">
                     <div id="hero-gallery" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
