@@ -552,6 +552,22 @@ img.disabled {
         margin: 20px;
     }
     
+    /* Prevent horizontal scrolling on mobile */
+    body {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    
+    .game-container {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    
+    .ban-pick {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    
     .popup-header h3 {
         font-size: 18px;
     }
@@ -1016,6 +1032,78 @@ img.disabled {
         max-height: calc(90vh - 80px);
         -webkit-overflow-scrolling: touch;
     }
+    
+    /* Mobile scrollbar styling - larger size */
+    .menu-options::-webkit-scrollbar {
+        width: 12px;
+    }
+    
+    .menu-options::-webkit-scrollbar-track {
+        background: #2c2c2c;
+        border-radius: 6px;
+    }
+    
+    .menu-options::-webkit-scrollbar-thumb {
+        background: #4ecdc4;
+        border-radius: 6px;
+        border: 2px solid #2c2c2c;
+    }
+    
+    .menu-options::-webkit-scrollbar-thumb:hover {
+        background: #26a69a;
+    }
+    
+    .menu-options::-webkit-scrollbar-thumb:active {
+        background: #1e7d72;
+    }
+    
+    /* Mobile scrollbar for hero gallery */
+    .hero-gallery::-webkit-scrollbar {
+        width: 12px;
+    }
+    
+    .hero-gallery::-webkit-scrollbar-track {
+        background: #2c2c2c;
+        border-radius: 6px;
+    }
+    
+    .hero-gallery::-webkit-scrollbar-thumb {
+        background: #4ecdc4;
+        border-radius: 6px;
+        border: 2px solid #2c2c2c;
+    }
+    
+    .hero-gallery::-webkit-scrollbar-thumb:hover {
+        background: #26a69a;
+    }
+    
+    .hero-gallery::-webkit-scrollbar-thumb:active {
+        background: #1e7d72;
+    }
+    
+    /* Mobile scrollbar for ban-pick section */
+    .ban-pick::-webkit-scrollbar {
+        width: 12px;
+    }
+    
+    .ban-pick::-webkit-scrollbar-track {
+        background: #2c2c2c;
+        border-radius: 6px;
+    }
+    
+    .ban-pick::-webkit-scrollbar-thumb {
+        background: #4ecdc4;
+        border-radius: 6px;
+        border: 2px solid #2c2c2c;
+    }
+    
+    .ban-pick::-webkit-scrollbar-thumb:hover {
+        background: #26a69a;
+    }
+    
+    .ban-pick::-webkit-scrollbar-thumb:active {
+        background: #1e7d72;
+    }
 }
 
 .menu-options .filter-checkbox {
@@ -1127,14 +1215,24 @@ img.disabled {
 /* Tablet Portrait (576px - 767px) */
 @media screen and (min-width: 576px) and (max-width: 767px) {
     .ban-pick {
-        padding: 0 15px 8px 15px;
+        padding: 0 12px 8px 12px;
         flex-direction: column;
         align-items: center;
+        max-width: 100vw;
+        overflow-x: hidden;
     }
     
     .team-section {
         width: 100%;
         margin-bottom: 8px;
+        max-width: 100%;
+    }
+    
+    #team1-container, #team2-container {
+        justify-content: center;
+        gap: 5px;
+        max-width: 100%;
+        flex-wrap: wrap;
     }
     
     .team-label1, .team-label2 {
@@ -1216,14 +1314,24 @@ img.disabled {
 /* Mobile Landscape (480px - 575px) */
 @media screen and (min-width: 480px) and (max-width: 575px) {
     .ban-pick {
-        padding: 0 10px 6px 10px;
+        padding: 0 8px 6px 8px;
         flex-direction: column;
         align-items: center;
+        max-width: 100vw;
+        overflow-x: hidden;
     }
     
     .team-section {
         width: 100%;
         margin-bottom: 6px;
+        max-width: 100%;
+    }
+    
+    #team1-container, #team2-container {
+        justify-content: center;
+        gap: 4px;
+        max-width: 100%;
+        flex-wrap: wrap;
     }
     
     .team-label1, .team-label2 {
@@ -1305,14 +1413,24 @@ img.disabled {
 /* Mobile Portrait (320px - 479px) */
 @media screen and (max-width: 479px) {
     .ban-pick {
-        padding: 0 8px 4px 8px;
+        padding: 0 5px 4px 5px;
         flex-direction: column;
         align-items: center;
+        max-width: 100vw;
+        overflow-x: hidden;
     }
     
     .team-section {
         width: 100%;
         margin-bottom: 4px;
+        max-width: 100%;
+    }
+    
+    #team1-container, #team2-container {
+        justify-content: center;
+        gap: 2px;
+        max-width: 100%;
+        flex-wrap: wrap;
     }
     
     .team-label1, .team-label2 {
