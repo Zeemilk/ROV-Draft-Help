@@ -274,6 +274,23 @@ class DraftHelper {
 
         // Mobile quick buttons
         this.addMobileQuickButtons(gameWrapper, index);
+        
+        // Add click event to hide popup when clicking outside
+        gameWrapper.addEventListener('click', (e) => {
+            // ถ้าคลิกที่พื้นที่ว่าง (ไม่ใช่ hero หรือ popup)
+            if (!e.target.closest('.hero-wrapper') && 
+                !e.target.closest('.team-selection-popup') && 
+                !e.target.closest('.hero-choose') &&
+                this.selectedHero) {
+                // ยกเลิกการเลือกฮีโร่
+                if (this.selectedElement) {
+                    this.selectedElement.style.outline = "none";
+                }
+                this.selectedHero = null;
+                this.selectedElement = null;
+                this.hideTeamSelectionPopup();
+            }
+        });
     }
 
     /**
@@ -367,6 +384,9 @@ class DraftHelper {
         this.selectedHero = null;
         this.selectedElement = null;
         gameState.isShowingWeakness.set(boxId, false);
+        
+        // ซ่อน popup เลือกทีมหลังจากเลือกฮีโร่เข้าทีมแล้ว
+        this.hideTeamSelectionPopup();
     }
 
     /**
@@ -502,55 +522,133 @@ class DraftHelper {
      * Add mobile quick buttons for easier hero selection
      */
     addMobileQuickButtons(gameWrapper, index) {
-        const mobileQuickButtons = document.createElement('div');
-        mobileQuickButtons.className = 'mobile-quick-buttons';
-        mobileQuickButtons.innerHTML = `
-            <div class="mobile-buttons-container">
-                <button class="mobile-btn team1-mobile-btn" title="ใส่ทีม 1">
-                    <span class="btn-icon">🔴</span>
-                    <span class="btn-text">ทีม 1</span>
-                </button>
-                <button class="mobile-btn team2-mobile-btn" title="ใส่ทีม 2">
-                    <span class="btn-icon">🔵</span>
-                    <span class="btn-text">ทีม 2</span>
-                </button>
+        // สร้าง popup container
+        const popupContainer = document.createElement('div');
+        popupContainer.className = 'team-selection-popup';
+        popupContainer.style.display = 'none';
+        popupContainer.innerHTML = `
+            <div class="popup-overlay"></div>
+            <div class="popup-content">
+                <div class="popup-header">
+                    <h3>เลือกทีม</h3>
+                    <button class="popup-close">&times;</button>
+                </div>
+                <div class="popup-buttons">
+                    <button class="popup-btn team1-popup-btn">
+                        <span class="btn-icon">🔴</span>
+                        <span class="btn-text">ทีม 1</span>
+                    </button>
+                    <button class="popup-btn team2-popup-btn">
+                        <span class="btn-icon">🔵</span>
+                        <span class="btn-text">ทีม 2</span>
+                    </button>
+                </div>
             </div>
         `;
         
-        const heroSelect = gameWrapper.querySelector('.hero-select');
-        heroSelect.insertBefore(mobileQuickButtons, heroSelect.firstChild);
+        // เพิ่ม popup ไปที่ body
+        document.body.appendChild(popupContainer);
         
-        // Event listeners for mobile buttons with touch support
-        const team1MobileBtn = mobileQuickButtons.querySelector('.team1-mobile-btn');
-        const team2MobileBtn = mobileQuickButtons.querySelector('.team2-mobile-btn');
+        // Event listeners for popup buttons
+        const team1PopupBtn = popupContainer.querySelector('.team1-popup-btn');
+        const team2PopupBtn = popupContainer.querySelector('.team2-popup-btn');
+        const popupClose = popupContainer.querySelector('.popup-close');
+        const popupOverlay = popupContainer.querySelector('.popup-overlay');
         
         const handleTeamSelection = (teamName) => (e) => {
             e.preventDefault();
             e.stopPropagation();
             this.selectHeroToTeam(gameWrapper, teamName, index);
+            this.hideTeamSelectionPopup();
         };
         
-        // Add both click and touch events
-        team1MobileBtn.addEventListener('click', handleTeamSelection('team1'));
-        team1MobileBtn.addEventListener('touchend', handleTeamSelection('team1'));
-        team2MobileBtn.addEventListener('click', handleTeamSelection('team2'));
-        team2MobileBtn.addEventListener('touchend', handleTeamSelection('team2'));
+        const handleClosePopup = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.hideTeamSelectionPopup();
+        };
         
-        // Add touch feedback
-        [team1MobileBtn, team2MobileBtn].forEach(btn => {
+        // Add both click and touch events for better mobile support
+        [team1PopupBtn, team2PopupBtn].forEach((btn, idx) => {
+            const teamName = idx === 0 ? 'team1' : 'team2';
+            
+            // Click events
+            btn.addEventListener('click', handleTeamSelection(teamName));
+            
+            // Touch events for mobile
             btn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 btn.style.transform = 'scale(0.95)';
                 btn.style.opacity = '0.8';
             });
             
-            btn.addEventListener('touchend', () => {
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleTeamSelection(teamName)(e);
                 setTimeout(() => {
                     btn.style.transform = 'scale(1)';
                     btn.style.opacity = '1';
                 }, 150);
             });
+            
+            // Prevent context menu on long press
+            btn.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+            });
         });
+        
+        // Close button events
+        popupClose.addEventListener('click', handleClosePopup);
+        popupClose.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        popupClose.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleClosePopup(e);
+        });
+        
+        // Overlay events
+        popupOverlay.addEventListener('click', handleClosePopup);
+        popupOverlay.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        popupOverlay.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleClosePopup(e);
+        });
+    }
+
+    /**
+     * Show team selection popup
+     */
+    showTeamSelectionPopup() {
+        const popup = document.querySelector('.team-selection-popup');
+        if (popup) {
+            popup.style.display = 'block';
+            // เพิ่ม animation
+            setTimeout(() => {
+                popup.classList.add('show');
+            }, 10);
+        }
+    }
+
+    /**
+     * Hide team selection popup
+     */
+    hideTeamSelectionPopup() {
+        const popup = document.querySelector('.team-selection-popup');
+        if (popup) {
+            popup.classList.remove('show');
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
+        }
     }
 
     /**
@@ -575,6 +673,9 @@ class DraftHelper {
                 }
             }
             this.updateTeam();
+            
+            // ซ่อน popup เลือกทีมหลังจากเลือกทีมแล้ว
+            this.hideTeamSelectionPopup();
         }
     }
 
@@ -659,6 +760,9 @@ class DraftHelper {
         this.selectedHero = img.alt;
         this.selectedElement = img;
         img.style.outline = "3px solid red";
+        
+        // แสดง popup เลือกทีมเมื่อมีการเลือกฮีโร่
+        this.showTeamSelectionPopup();
     }
 
     /**

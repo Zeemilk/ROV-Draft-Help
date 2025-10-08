@@ -21,6 +21,11 @@ body {
     -ms-user-select: none;
 }
 
+.game-container {
+    margin: 0;
+    padding: 0;
+}
+
 /* Device-specific styles */
 .mobile .hero-wrapper img {
     width: var(--hero-size) !important;
@@ -133,15 +138,17 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    padding: 0 20px 0 20px;
+    padding: 0 20px 10px 20px;
     justify-content: space-between;
     background: #2c2c2cd8;
     margin-top: 0; /* ไม่เว้นช่องว่างด้านบน */
+    margin-bottom: 0;
 }
 #team1-container,
 #team2-container {
   display: flex;
   gap: 10px;
+  margin-top: 0;
 }
 img.disabled {
   cursor: not-allowed;
@@ -278,7 +285,8 @@ img.disabled {
 }
 
 .game {
-  margin-top: 20px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 .team-stats {
   flex: 1;
@@ -297,19 +305,22 @@ img.disabled {
   font-weight: bold;
   font-size: 25px;
   text-align: left;
+  margin-top: 0;
   margin-bottom: 5px;
   color: white;
 }
 .team-label2 {
   font-weight: bold;
   font-size: 25px;
-  text-align: ight;
+  text-align: right;
+  margin-top: 0;
   margin-bottom: 5px;
   color: white;
 }
 .team-section {
   display: flex;
   flex-direction: column;
+  margin-top: 0;
 }
 @media screen and (max-width: 768px) {
   .hero-choose {
@@ -377,66 +388,249 @@ img.disabled {
 
 }
 
-/* Mobile Quick Buttons สำหรับมือถือ */
-.mobile-quick-buttons {
-    margin-bottom: 15px;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+/* Team Selection Popup */
+.team-selection-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: none;
 }
 
-.mobile-buttons-container {
-    display: flex;
-    gap: 8px;
-    justify-content: space-between;
-    margin-bottom: 12px;
+.popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    /* Mobile touch improvements */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
-.mobile-btn {
-    flex: 1;
-    padding: 10px 8px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
+.popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: #2c2c2c;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #444;
+    min-width: 280px;
+    opacity: 0;
     transition: all 0.3s ease;
-    font-size: 14px;
+}
+
+.team-selection-popup.show .popup-content {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.popup-header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    gap: 3px;
-    min-height: 45px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #444;
+}
+
+.popup-header h3 {
+    color: white;
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.popup-close {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    /* Mobile touch improvements */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.popup-close:hover {
+    background: #444;
+    color: white;
+}
+
+.popup-buttons {
+    display: flex;
+    gap: 15px;
     justify-content: center;
 }
 
-.team1-mobile-btn {
+.popup-btn {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    min-height: 80px;
+    justify-content: center;
+    /* Mobile touch improvements */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.team1-popup-btn {
     background: linear-gradient(45deg, #ff6b6b, #ee5a24);
     color: white;
 }
 
-.team1-mobile-btn:active {
+.team1-popup-btn:hover {
     background: linear-gradient(45deg, #ff5252, #d63031);
-    transform: scale(0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
 }
 
-.team2-mobile-btn {
+.team2-popup-btn {
     background: linear-gradient(45deg, #4ecdc4, #44a08d);
     color: white;
 }
 
-.team2-mobile-btn:active {
+.team2-popup-btn:hover {
     background: linear-gradient(45deg, #26a69a, #00897b);
-    transform: scale(0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
 }
 
-.btn-icon {
-    font-size: 16px;
+.popup-btn .btn-icon {
+    font-size: 24px;
 }
 
-.btn-text {
-    font-size: 12px;
+.popup-btn .btn-text {
+    font-size: 14px;
     font-weight: bold;
+}
+
+/* Mobile responsive for popup */
+@media screen and (max-width: 768px) {
+    .popup-content {
+        min-width: 250px;
+        padding: 15px;
+        margin: 20px;
+    }
+    
+    .popup-header h3 {
+        font-size: 18px;
+    }
+    
+    .popup-buttons {
+        gap: 10px;
+    }
+    
+    .popup-btn {
+        padding: 12px 15px;
+        font-size: 14px;
+        min-height: 70px;
+        /* Enhanced touch targets for mobile */
+        min-width: 100px;
+    }
+    
+    .popup-btn .btn-icon {
+        font-size: 20px;
+    }
+    
+    .popup-btn .btn-text {
+        font-size: 12px;
+    }
+    
+    /* Active states for touch */
+    .popup-btn:active {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+    
+    .popup-close:active {
+        background: #444;
+        color: white;
+        transform: scale(0.9);
+    }
+}
+
+@media screen and (max-width: 479px) {
+    .popup-content {
+        min-width: 220px;
+        padding: 12px;
+        margin: 15px;
+    }
+    
+    .popup-header h3 {
+        font-size: 16px;
+    }
+    
+    .popup-buttons {
+        gap: 8px;
+    }
+    
+    .popup-btn {
+        padding: 10px 12px;
+        font-size: 12px;
+        min-height: 60px;
+        /* Enhanced touch targets for small screens */
+        min-width: 90px;
+    }
+    
+    .popup-btn .btn-icon {
+        font-size: 18px;
+    }
+    
+    .popup-btn .btn-text {
+        font-size: 10px;
+    }
+    
+    /* Active states for touch on small screens */
+    .popup-btn:active {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+    
+    .popup-close:active {
+        background: #444;
+        color: white;
+        transform: scale(0.9);
+    }
 }
 
 /* Responsive Design for All Platforms */
@@ -449,7 +643,7 @@ img.disabled {
     }
     
     .ban-pick {
-        padding: 20px 40px;
+        padding: 0 40px 15px 40px;
     }
     
     .hero-choose {
@@ -466,7 +660,7 @@ img.disabled {
 /* Desktop (992px - 1199px) */
 @media screen and (min-width: 992px) and (max-width: 1199px) {
     .ban-pick {
-        padding: 15px 30px;
+        padding: 0 30px 12px 30px;
     }
     
     .hero-choose {
@@ -483,14 +677,14 @@ img.disabled {
 /* Tablet Landscape (768px - 991px) */
 @media screen and (min-width: 768px) and (max-width: 991px) {
     .ban-pick {
-        padding: 10px 20px;
+        padding: 0 20px 10px 20px;
         flex-direction: column;
         align-items: center;
     }
     
     .team-section {
         width: 100%;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
     
     .team-label1, .team-label2 {
@@ -531,34 +725,41 @@ img.disabled {
 /* Tablet Portrait (576px - 767px) */
 @media screen and (min-width: 576px) and (max-width: 767px) {
     .ban-pick {
-        padding: 8px 15px;
+        padding: 0 15px 8px 15px;
         flex-direction: column;
         align-items: center;
     }
     
     .team-section {
         width: 100%;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
     
     .team-label1, .team-label2 {
-        font-size: 18px;
+        font-size: 16px;
         text-align: center;
+        margin-bottom: 3px;
     }
     
     #team1-container, #team2-container {
         justify-content: center;
-        gap: 8px;
+        gap: 6px;
     }
     
     .hero-choose {
-        width: 60px;
-        height: 60px;
+        width: 55px;
+        height: 55px;
     }
     
     .hero-wrapper img {
-        width: 70px;
-        height: 70px;
+        width: 65px;
+        height: 65px;
+    }
+    
+    /* ลดขนาด hero gallery สำหรับแท็บเล็ต */
+    #hero-gallery {
+        max-height: 220px;
+        overflow-y: auto;
     }
     
     .content {
@@ -582,57 +783,77 @@ img.disabled {
         font-size: 16px;
     }
     
+    /* ลดขนาดปุ่มเลือกทีมสำหรับแท็บเล็ตแนวตั้ง */
     .mobile-btn {
-        padding: 10px 8px;
-        font-size: 14px;
-        min-height: 50px;
+        padding: 8px 10px;
+        font-size: 13px;
+        min-height: 45px;
+        border-radius: 6px;
     }
     
     .btn-icon { 
-        font-size: 18px; 
+        font-size: 16px; 
     }
     
     .btn-text { 
-        font-size: 12px; 
+        font-size: 11px; 
+    }
+    
+    /* ลดขนาด mobile quick buttons container */
+    .mobile-quick-buttons {
+        margin-bottom: 12px;
+        padding: 10px;
+    }
+    
+    .mobile-buttons-container {
+        gap: 8px;
+        margin-bottom: 10px;
     }
 }
 
 /* Mobile Landscape (480px - 575px) */
 @media screen and (min-width: 480px) and (max-width: 575px) {
     .ban-pick {
-        padding: 6px 10px;
+        padding: 0 10px 6px 10px;
         flex-direction: column;
         align-items: center;
     }
     
     .team-section {
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
     }
     
     .team-label1, .team-label2 {
-        font-size: 16px;
+        font-size: 14px;
         text-align: center;
+        margin-bottom: 3px;
     }
     
     #team1-container, #team2-container {
         justify-content: center;
-        gap: 6px;
+        gap: 5px;
     }
     
     .hero-choose {
-        width: 55px;
-        height: 55px;
+        width: 50px;
+        height: 50px;
     }
     
     .hero-wrapper img {
-        width: 65px;
-        height: 65px;
+        width: 60px;
+        height: 60px;
+    }
+    
+    /* ลดขนาด hero gallery สำหรับมือถือแนวนอน */
+    #hero-gallery {
+        max-height: 180px;
+        overflow-y: auto;
     }
     
     .content {
-        padding: 10px;
-        gap: 12px;
+        padding: 8px;
+        gap: 10px;
     }
     
     #lane-filter {
@@ -651,57 +872,77 @@ img.disabled {
         font-size: 14px;
     }
     
+    /* ลดขนาดปุ่มเลือกทีมสำหรับมือถือแนวนอน */
     .mobile-btn {
-        padding: 8px 6px;
-        font-size: 12px;
-        min-height: 45px;
+        padding: 6px 8px;
+        font-size: 11px;
+        min-height: 38px;
+        border-radius: 6px;
     }
     
     .btn-icon { 
-        font-size: 16px; 
+        font-size: 14px; 
     }
     
     .btn-text { 
-        font-size: 10px; 
+        font-size: 9px; 
+    }
+    
+    /* ลดขนาด mobile quick buttons container */
+    .mobile-quick-buttons {
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+    
+    .mobile-buttons-container {
+        gap: 8px;
+        margin-bottom: 10px;
     }
 }
 
 /* Mobile Portrait (320px - 479px) */
 @media screen and (max-width: 479px) {
     .ban-pick {
-        padding: 4px 8px;
+        padding: 0 8px 4px 8px;
         flex-direction: column;
         align-items: center;
     }
     
     .team-section {
         width: 100%;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
     }
     
     .team-label1, .team-label2 {
-        font-size: 14px;
+        font-size: 12px;
         text-align: center;
+        margin-bottom: 2px;
     }
     
     #team1-container, #team2-container {
         justify-content: center;
-        gap: 4px;
+        gap: 3px;
     }
     
     .hero-choose {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
     }
     
     .hero-wrapper img {
-        width: 60px;
-        height: 60px;
+        width: 55px;
+        height: 55px;
+    }
+    
+    /* ลดขนาด hero gallery สำหรับมือถือ */
+    #hero-gallery {
+        max-height: 200px;
+        overflow-y: auto;
     }
     
     .content {
         padding: 8px;
-        gap: 10px;
+        gap: 8px;
     }
     
     #lane-filter {
@@ -720,38 +961,51 @@ img.disabled {
         font-size: 12px;
     }
     
+    /* ลดขนาดปุ่มเลือกทีมสำหรับมือถือ */
     .mobile-btn {
-        padding: 6px 4px;
-        font-size: 10px;
-        min-height: 40px;
+        padding: 4px 6px;
+        font-size: 9px;
+        min-height: 32px;
+        border-radius: 6px;
     }
     
     .btn-icon { 
-        font-size: 14px; 
+        font-size: 12px; 
     }
     
     .btn-text { 
-        font-size: 9px; 
+        font-size: 8px; 
+    }
+    
+    /* ลดขนาด mobile quick buttons container */
+    .mobile-quick-buttons {
+        margin-bottom: 8px;
+        padding: 8px;
+    }
+    
+    .mobile-buttons-container {
+        gap: 6px;
+        margin-bottom: 8px;
     }
     
     .hero-select {
-        padding: 8px;
+        padding: 6px;
     }
     
     .display {
-        padding: 8px;
+        padding: 6px;
     }
     
     .stat-row {
-        gap: 10px;
+        gap: 8px;
     }
     
     .warning-container {
-        margin-top: 8px;
+        margin-top: 6px;
     }
     
     .cc-warning {
-        font-size: 12px;
+        font-size: 11px;
     }
 }
 
