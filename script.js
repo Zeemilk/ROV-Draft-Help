@@ -128,26 +128,44 @@ class DraftHelper {
     updateGalleryLayout(gallery) {
         const { screenWidth } = this.deviceInfo;
         
-        if (screenWidth <= 768) {
-            // Use grid layout for mobile with fixed columns
-            gallery.style.display = 'grid';
-            if (screenWidth <= 479) {
-                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
-            } else if (screenWidth <= 575) {
-                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
-            } else {
-                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
-            }
-            gallery.style.gap = '8px';
-            gallery.style.padding = '10px';
-            gallery.style.maxWidth = '100%';
-            gallery.style.overflowX = 'hidden';
-        } else {
-            // Use flex layout for desktop
+        gallery.style.maxWidth = '100%';
+        gallery.style.overflowX = 'hidden';
+        gallery.style.overflowY = 'auto';
+        gallery.style.webkitOverflowScrolling = 'touch';
+        gallery.style.overscrollBehavior = 'contain';
+        gallery.style.touchAction = 'pan-y';
+        
+        if (screenWidth >= 992) {
+            // Desktop and Large Desktop - Use flex layout
             gallery.style.display = 'flex';
             gallery.style.flexWrap = 'wrap';
             gallery.style.gap = '10px';
-            gallery.style.padding = '0';
+            gallery.style.padding = '15px';
+        } else {
+            // Mobile and Tablet - Use grid layout
+            gallery.style.display = 'grid';
+            
+            if (screenWidth >= 768) {
+                // Tablet Landscape
+                gallery.style.gridTemplateColumns = 'repeat(6, 1fr)';
+                gallery.style.gap = '10px';
+                gallery.style.padding = '15px';
+            } else if (screenWidth <= 479) {
+                // Mobile Portrait
+                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
+                gallery.style.gap = '6px';
+                gallery.style.padding = '8px';
+            } else if (screenWidth <= 575) {
+                // Mobile Landscape
+                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
+                gallery.style.gap = '7px';
+                gallery.style.padding = '9px';
+            } else {
+                // Tablet Portrait
+                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
+                gallery.style.gap = '8px';
+                gallery.style.padding = '10px';
+            }
         }
     }
 
@@ -876,10 +894,12 @@ class DraftHelper {
                     return;
                 }
                 
-                // ตรวจสอบว่าเป็นการแตะแบบสั้น (ไม่ใช่การเลื่อน)
-                const touchDuration = Date.now() - touchStartTime;
-                if (touchDuration > 200) { // ถ้าแตะนานเกิน 200ms อาจเป็นการเลื่อน
-                    return;
+                // ตรวจสอบการแตะเฉพาะบนอุปกรณ์สัมผัส
+                if (this.deviceInfo.isTouchDevice) {
+                    const touchDuration = Date.now() - touchStartTime;
+                    if (touchDuration > 200) { // ถ้าแตะนานเกิน 200ms อาจเป็นการเลื่อน
+                        return;
+                    }
                 }
                 
                 e.preventDefault();
@@ -922,8 +942,8 @@ class DraftHelper {
                     img.style.opacity = "1";
                 }, 100);
                 
-                // ถ้าไม่ใช่การเลื่อน ให้เลือกฮีโร่
-                if (!isScrolling) {
+                // ถ้าไม่ใช่การเลื่อน ให้เลือกฮีโร่ (เฉพาะบนอุปกรณ์สัมผัส)
+                if (!isScrolling && this.deviceInfo.isTouchDevice) {
                     // เพิ่มการตรวจสอบระยะทางอีกครั้ง
                     const touchDuration = Date.now() - touchStartTime;
                     if (touchDuration < 200) {

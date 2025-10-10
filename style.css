@@ -226,6 +226,8 @@ img.disabled {
   height: auto;
   overflow: hidden;
   border-radius: 4px;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .hero-wrapper img {
@@ -237,6 +239,8 @@ img.disabled {
   touch-action: pan-y;
   -webkit-tap-highlight-color: transparent;
   aspect-ratio: 1;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 #hero-gallery {
@@ -1187,11 +1191,40 @@ img.disabled {
         height: 80px;
     }
     
+    .hero-wrapper {
+        width: 80px;
+        height: 80px;
+        aspect-ratio: 1;
+        overflow: hidden;
+        border-radius: 4px;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .hero-wrapper:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
     .hero-wrapper img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         aspect-ratio: 1;
+    }
+    
+    #hero-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 15px;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
 }
 
@@ -1206,11 +1239,40 @@ img.disabled {
         height: 75px;
     }
     
+    .hero-wrapper {
+        width: 75px;
+        height: 75px;
+        aspect-ratio: 1;
+        overflow: hidden;
+        border-radius: 4px;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .hero-wrapper:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
     .hero-wrapper img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         aspect-ratio: 1;
+    }
+    
+    #hero-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 15px;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
 }
 
@@ -1246,6 +1308,19 @@ img.disabled {
         height: 100%;
         object-fit: cover;
         aspect-ratio: 1;
+    }
+    
+    #hero-gallery {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+        padding: 15px;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
     
     .content {
