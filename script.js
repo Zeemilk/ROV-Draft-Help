@@ -129,11 +129,19 @@ class DraftHelper {
         const { screenWidth } = this.deviceInfo;
         
         if (screenWidth <= 768) {
-            // Use grid layout for mobile
+            // Use grid layout for mobile with fixed columns
             gallery.style.display = 'grid';
-            gallery.style.gridTemplateColumns = 'repeat(auto-fill, minmax(60px, 1fr))';
+            if (screenWidth <= 479) {
+                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
+            } else if (screenWidth <= 575) {
+                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
+            } else {
+                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
+            }
             gallery.style.gap = '8px';
             gallery.style.padding = '10px';
+            gallery.style.maxWidth = '100%';
+            gallery.style.overflowX = 'hidden';
         } else {
             // Use flex layout for desktop
             gallery.style.display = 'flex';
@@ -856,28 +864,72 @@ class DraftHelper {
 
             wrapper.appendChild(img);
             
-            // Enhanced touch and click handling
+            // Enhanced touch and click handling with scroll detection
+            let touchStartTime = 0;
+            let touchStartY = 0;
+            let touchStartX = 0;
+            let isScrolling = false;
+            
             const handleHeroSelection = (e) => {
+                // ถ้ากำลังเลื่อนอยู่ ให้ข้ามการเลือกฮีโร่
+                if (isScrolling) {
+                    return;
+                }
+                
+                // ตรวจสอบว่าเป็นการแตะแบบสั้น (ไม่ใช่การเลื่อน)
+                const touchDuration = Date.now() - touchStartTime;
+                if (touchDuration > 200) { // ถ้าแตะนานเกิน 200ms อาจเป็นการเลื่อน
+                    return;
+                }
+                
                 e.preventDefault();
                 e.stopPropagation();
                 this.selectHero(img);
             };
             
             img.addEventListener("click", handleHeroSelection);
-            img.addEventListener("touchend", handleHeroSelection);
             
-            // Touch feedback
+            // Touch events with scroll detection
             img.addEventListener("touchstart", (e) => {
-                e.preventDefault();
+                touchStartTime = Date.now();
+                touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches[0].clientX;
+                isScrolling = false;
+                
+                // ไม่ preventDefault เพื่อให้การเลื่อนทำงานได้
                 img.style.transform = "scale(0.9)";
                 img.style.opacity = "0.7";
             });
             
-            img.addEventListener("touchend", () => {
+            img.addEventListener("touchmove", (e) => {
+                const touchY = e.touches[0].clientY;
+                const touchX = e.touches[0].clientX;
+                const deltaY = Math.abs(touchY - touchStartY);
+                const deltaX = Math.abs(touchX - touchStartX);
+                
+                // ถ้าเลื่อนมากกว่า 5px ถือว่าเป็นการเลื่อน
+                if (deltaY > 5 || deltaX > 5) {
+                    isScrolling = true;
+                    // รีเซ็ต visual feedback เมื่อเริ่มเลื่อน
+                    img.style.transform = "scale(1)";
+                    img.style.opacity = "1";
+                }
+            });
+            
+            img.addEventListener("touchend", (e) => {
                 setTimeout(() => {
                     img.style.transform = "scale(1)";
                     img.style.opacity = "1";
-                }, 150);
+                }, 100);
+                
+                // ถ้าไม่ใช่การเลื่อน ให้เลือกฮีโร่
+                if (!isScrolling) {
+                    // เพิ่มการตรวจสอบระยะทางอีกครั้ง
+                    const touchDuration = Date.now() - touchStartTime;
+                    if (touchDuration < 200) {
+                        handleHeroSelection(e);
+                    }
+                }
             });
             
             gallery.appendChild(wrapper);
