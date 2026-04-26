@@ -199,7 +199,7 @@ class DraftHelper {
      */
     async loadHeroData() {
         try {
-            const response = await fetch('./ROV.csv');
+            const response = await fetch(`${import.meta.env.BASE_URL}ROV.csv`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -428,7 +428,7 @@ class DraftHelper {
      * Select hero to box
      */
     selectHeroToBox(imgInBox, boxId, gameState) {
-        imgInBox.src = `./asset/hero/${this.selectedHero}.webp`;
+        imgInBox.src = `${import.meta.env.BASE_URL}asset/hero/${this.selectedHero}.webp`;
         imgInBox.alt = this.selectedHero;
         this.selectedElement.style.display = "none";
         this.selectedElement.style.outline = "none";
@@ -874,7 +874,7 @@ class DraftHelper {
             for (let box of teamBoxes) {
                 const imgInBox = box.querySelector("img");
                 if (!imgInBox.alt) {
-                    imgInBox.src = `./asset/hero/${this.selectedHero}.webp`;
+                    imgInBox.src = `${import.meta.env.BASE_URL}asset/hero/${this.selectedHero}.webp`;
                     imgInBox.alt = this.selectedHero;
                     this.selectedElement.style.display = "none";
                     this.selectedElement.style.outline = "none";
@@ -917,7 +917,7 @@ class DraftHelper {
             wrapper.className = "hero-wrapper";
             
             const img = document.createElement("img");
-            img.src = `./asset/hero/${hero}.webp`;
+            img.src = `${import.meta.env.BASE_URL}asset/hero/${hero}.webp`;
             img.alt = hero;
             img.title = hero;
             img.style.width = "var(--hero-size)";
@@ -1042,7 +1042,7 @@ class DraftHelper {
         for (const box of teamBoxes) {
             const imgInBox = box.querySelector("img");
             if (imgInBox && !imgInBox.alt) {
-                imgInBox.src = `./asset/hero/${heroName}.webp`;
+                imgInBox.src = `${import.meta.env.BASE_URL}asset/hero/${heroName}.webp`;
                 imgInBox.alt = heroName;
                 return true;
             }
@@ -1169,7 +1169,7 @@ class DraftHelper {
      */
     createHeroImagesHTML(heroes, teamClass) {
         return heroes.map(hero => 
-            `<img src="./asset/hero/${hero}.webp" alt="${hero}" title="${hero}" 
+            `<img src="${import.meta.env.BASE_URL}asset/hero/${hero}.webp" alt="${hero}" title="${hero}" 
                  style="width:32px;height:32px;vertical-align:middle;margin-right:4px;border:1px solid #888;border-radius:4px;cursor:pointer;" 
                  class="${teamClass}-hero-img">`
         ).join("");
@@ -1287,21 +1287,21 @@ class DraftHelper {
                 <div class="team-section">
                     <div class="team-label1">Team 1</div>
                     <div id="team1-container">
-                        <div class="hero-choose" id="AbyssalDragon1"><img src="./asset/etc/AbyssalDragon.webp" data-default="./asset/etc/AbyssalDragon.webp"></div>
-                        <div class="hero-choose" id="Support1"><img src="./asset/etc/Support.webp" data-default="./asset/etc/Support.webp"></div>
-                        <div class="hero-choose" id="Mid1"><img src="./asset/etc/Mid.webp" data-default="./asset/etc/Mid.webp"></div>
-                        <div class="hero-choose" id="Jungle1"><img src="./asset/etc/Jungle.webp" data-default="./asset/etc/Jungle.webp"></div>
-                        <div class="hero-choose" id="DarkSlayer1"><img src="./asset/etc/DarkSlayer.webp" data-default="./asset/etc/DarkSlayer.webp"></div>
+                        <div class="hero-choose" id="AbyssalDragon1"><img src="${import.meta.env.BASE_URL}asset/etc/AbyssalDragon.webp" data-default="${import.meta.env.BASE_URL}asset/etc/AbyssalDragon.webp"></div>
+                        <div class="hero-choose" id="Support1"><img src="${import.meta.env.BASE_URL}asset/etc/Support.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Support.webp"></div>
+                        <div class="hero-choose" id="Mid1"><img src="${import.meta.env.BASE_URL}asset/etc/Mid.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Mid.webp"></div>
+                        <div class="hero-choose" id="Jungle1"><img src="${import.meta.env.BASE_URL}asset/etc/Jungle.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Jungle.webp"></div>
+                        <div class="hero-choose" id="DarkSlayer1"><img src="${import.meta.env.BASE_URL}asset/etc/DarkSlayer.webp" data-default="${import.meta.env.BASE_URL}asset/etc/DarkSlayer.webp"></div>
                     </div>
                 </div>
                 <div class="team-section">
                     <div class="team-label2">Team 2</div>
                     <div id="team2-container">
-                        <div class="hero-choose" id="AbyssalDragon2"><img src="./asset/etc/AbyssalDragon.webp" data-default="./asset/etc/AbyssalDragon.webp"></div>
-                        <div class="hero-choose" id="Support2"><img src="./asset/etc/Support.webp" data-default="./asset/etc/Support.webp"></div>
-                        <div class="hero-choose" id="Mid2"><img src="./asset/etc/Mid.webp" data-default="./asset/etc/Mid.webp"></div>
-                        <div class="hero-choose" id="Jungle2"><img src="./asset/etc/Jungle.webp" data-default="./asset/etc/Jungle.webp"></div>
-                        <div class="hero-choose" id="DarkSlayer2"><img src="./asset/etc/DarkSlayer.webp" data-default="./asset/etc/DarkSlayer.webp"></div>
+                        <div class="hero-choose" id="AbyssalDragon2"><img src="${import.meta.env.BASE_URL}asset/etc/AbyssalDragon.webp" data-default="${import.meta.env.BASE_URL}asset/etc/AbyssalDragon.webp"></div>
+                        <div class="hero-choose" id="Support2"><img src="${import.meta.env.BASE_URL}asset/etc/Support.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Support.webp"></div>
+                        <div class="hero-choose" id="Mid2"><img src="${import.meta.env.BASE_URL}asset/etc/Mid.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Mid.webp"></div>
+                        <div class="hero-choose" id="Jungle2"><img src="${import.meta.env.BASE_URL}asset/etc/Jungle.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Jungle.webp"></div>
+                        <div class="hero-choose" id="DarkSlayer2"><img src="${import.meta.env.BASE_URL}asset/etc/DarkSlayer.webp" data-default="${import.meta.env.BASE_URL}asset/etc/DarkSlayer.webp"></div>
                     </div>
                 </div>
             </div>
