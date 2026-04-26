@@ -11,6 +11,7 @@ class DraftHelper {
         this.selectedElement = null;
         this.isLoading = false;
         this.gameStates = new Map(); // Store game states for persistence
+        this.activeQuickTeam = "team1"; // quick-pick target team
     }
 
     /**
@@ -250,7 +251,7 @@ class DraftHelper {
             this.heroDataList.push(heroObj);
         }
 
-        this.heroDataList.sort((a, b) => a.Hero.localeCompare(b.Hero));
+        this.heroDataList.sort((a, b) => this.compareHeroPriority(a, b));
     }
 
     /**
@@ -274,6 +275,8 @@ class DraftHelper {
         const chooseBoxes = gameWrapper.querySelectorAll(".hero-choose");
         const filterButtons = gameWrapper.querySelectorAll('#lane-filter input[type="checkbox"]');
         const searchInput = gameWrapper.querySelector(`#hero-search-${index}`);
+        const quickTeam1Btn = gameWrapper.querySelector(".quick-team-btn.team1");
+        const quickTeam2Btn = gameWrapper.querySelector(".quick-team-btn.team2");
         
         const gameState = {
             selectedLanes: new Set(),
@@ -283,6 +286,24 @@ class DraftHelper {
         };
 
         this.gameStates.set(index, gameState);
+
+        // Quick team select (one-click pick)
+        const setActive = (team) => {
+            this.activeQuickTeam = team;
+            quickTeam1Btn?.classList.toggle("active", team === "team1");
+            quickTeam2Btn?.classList.toggle("active", team === "team2");
+        };
+        quickTeam1Btn?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setActive("team1");
+        });
+        quickTeam2Btn?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setActive("team2");
+        });
+        setActive(this.activeQuickTeam);
 
         // Hero selection boxes
         chooseBoxes.forEach(box => {
@@ -460,8 +481,39 @@ class DraftHelper {
         });
         
         filtered.sort((a, b) => a.Hero.localeCompare(b.Hero));
-        
-        return [...result, ...filtered];
+
+        return [...result, ...this.sortHeroesByPriority(filtered)];
+    }
+
+    compareHeroPriority(a, b) {
+        const tierOrder = { S: 0, A: 1, B: 2, C: 3, D: 4, E: 5, F: 6 };
+        const tierA = (a.Tier || "").toString().trim().toUpperCase();
+        const tierB = (b.Tier || "").toString().trim().toUpperCase();
+        const tierRankA = tierOrder[tierA] ?? 99;
+        const tierRankB = tierOrder[tierB] ?? 99;
+        if (tierRankA !== tierRankB) return tierRankA - tierRankB;
+
+        const laneRankA = this.getLaneRank(a.Lane);
+        const laneRankB = this.getLaneRank(b.Lane);
+        if (laneRankA !== laneRankB) return laneRankA - laneRankB;
+
+        return (a.Hero || "").localeCompare(b.Hero || "");
+    }
+
+    getLaneRank(laneRaw) {
+        const lane = (laneRaw || "").toString().toLowerCase();
+        // Preferred lane order for sorting
+        const laneOrder = ["mid", "abyssal", "support", "darkslayer", "jungle"];
+
+        let best = 99;
+        laneOrder.forEach((key, idx) => {
+            if (lane.includes(key)) best = Math.min(best, idx);
+        });
+        return best;
+    }
+
+    sortHeroesByPriority(list) {
+        return [...list].sort((a, b) => this.compareHeroPriority(a, b));
     }
 
     /**
@@ -650,8 +702,8 @@ class DraftHelper {
             
             return matchLane && matchType && matchSearch;
         });
-        
-        this.initGallery(filtered, gallery, true);
+
+        this.initGallery(this.sortHeroesByPriority(filtered), gallery, true);
     }
 
     /**
@@ -904,6 +956,15 @@ class DraftHelper {
                 
                 e.preventDefault();
                 e.stopPropagation();
+                // One-click pick: place to active team immediately
+                const placed = this.placeHeroToNextEmptySlot(this.activeQuickTeam, img.alt);
+                if (placed) {
+                    img.style.display = "none";
+                    this.updateTeam();
+                    return;
+                }
+
+                // Fallback to original behavior (popup/team selection)
                 this.selectHero(img);
             };
             
@@ -969,6 +1030,24 @@ class DraftHelper {
         
         // แสดง popup เลือกทีมเมื่อมีการเลือกฮีโร่
         this.showTeamSelectionPopup();
+    }
+
+    placeHeroToNextEmptySlot(teamName, heroName) {
+        if (!teamName || !heroName) return false;
+
+        const gameWrapper = document.querySelector(`.game[data-index="${this.currentGameIndex}"]`);
+        const teamBoxes = gameWrapper?.querySelectorAll(`#${teamName}-container .hero-choose`);
+        if (!teamBoxes || teamBoxes.length === 0) return false;
+
+        for (const box of teamBoxes) {
+            const imgInBox = box.querySelector("img");
+            if (imgInBox && !imgInBox.alt) {
+                imgInBox.src = `./asset/hero/${heroName}.webp`;
+                imgInBox.alt = heroName;
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1208,26 +1287,31 @@ class DraftHelper {
                 <div class="team-section">
                     <div class="team-label1">Team 1</div>
                     <div id="team1-container">
-                        <div class="hero-choose" id="AbyssalDragon1"><img src="/asset/etc/AbyssalDragon.webp" data-default="/asset/etc/AbyssalDragon.webp"></div>
-                        <div class="hero-choose" id="Support1"><img src="/asset/etc/Support.webp" data-default="/asset/etc/Support.webp"></div>
-                        <div class="hero-choose" id="Mid1"><img src="/asset/etc/Mid.webp" data-default="/asset/etc/Mid.webp"></div>
-                        <div class="hero-choose" id="Jungle1"><img src="/asset/etc/Jungle.webp" data-default="/asset/etc/Jungle.webp"></div>
-                        <div class="hero-choose" id="DarkSlayer1"><img src="/asset/etc/DarkSlayer.webp" data-default="/asset/etc/DarkSlayer.webp"></div>
+                        <div class="hero-choose" id="AbyssalDragon1"><img src="./asset/etc/AbyssalDragon.webp" data-default="./asset/etc/AbyssalDragon.webp"></div>
+                        <div class="hero-choose" id="Support1"><img src="./asset/etc/Support.webp" data-default="./asset/etc/Support.webp"></div>
+                        <div class="hero-choose" id="Mid1"><img src="./asset/etc/Mid.webp" data-default="./asset/etc/Mid.webp"></div>
+                        <div class="hero-choose" id="Jungle1"><img src="./asset/etc/Jungle.webp" data-default="./asset/etc/Jungle.webp"></div>
+                        <div class="hero-choose" id="DarkSlayer1"><img src="./asset/etc/DarkSlayer.webp" data-default="./asset/etc/DarkSlayer.webp"></div>
                     </div>
                 </div>
                 <div class="team-section">
                     <div class="team-label2">Team 2</div>
                     <div id="team2-container">
-                        <div class="hero-choose" id="AbyssalDragon2"><img src="/asset/etc/AbyssalDragon.webp" data-default="/asset/etc/AbyssalDragon.webp"></div>
-                        <div class="hero-choose" id="Support2"><img src="/asset/etc/Support.webp" data-default="/asset/etc/Support.webp"></div>
-                        <div class="hero-choose" id="Mid2"><img src="/asset/etc/Mid.webp" data-default="/asset/etc/Mid.webp"></div>
-                        <div class="hero-choose" id="Jungle2"><img src="/asset/etc/Jungle.webp" data-default="/asset/etc/Jungle.webp"></div>
-                        <div class="hero-choose" id="DarkSlayer2"><img src="/asset/etc/DarkSlayer.webp" data-default="/asset/etc/DarkSlayer.webp"></div>
+                        <div class="hero-choose" id="AbyssalDragon2"><img src="./asset/etc/AbyssalDragon.webp" data-default="./asset/etc/AbyssalDragon.webp"></div>
+                        <div class="hero-choose" id="Support2"><img src="./asset/etc/Support.webp" data-default="./asset/etc/Support.webp"></div>
+                        <div class="hero-choose" id="Mid2"><img src="./asset/etc/Mid.webp" data-default="./asset/etc/Mid.webp"></div>
+                        <div class="hero-choose" id="Jungle2"><img src="./asset/etc/Jungle.webp" data-default="./asset/etc/Jungle.webp"></div>
+                        <div class="hero-choose" id="DarkSlayer2"><img src="./asset/etc/DarkSlayer.webp" data-default="./asset/etc/DarkSlayer.webp"></div>
                     </div>
                 </div>
             </div>
             <div class="content" id="content-0">
                 <div class="hero-select">
+                    <div class="quick-team-picker">
+                        <span class="quick-team-label">Quick Pick:</span>
+                        <button class="quick-team-btn team1" type="button">Team 1</button>
+                        <button class="quick-team-btn team2" type="button">Team 2</button>
+                    </div>
                     <div id="lane-filter" style="margin-bottom: 10px;">
                         <!-- Desktop Filter -->
                         <div class="desktop-filter">
