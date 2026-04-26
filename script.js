@@ -11,6 +11,7 @@ class DraftHelper {
         this.selectedElement = null;
         this.isLoading = false;
         this.gameStates = new Map(); // Store game states for persistence
+        this.activeQuickTeam = "team1"; // quick-pick target team
     }
 
     /**
@@ -61,6 +62,7 @@ class DraftHelper {
             document.body.classList.add('touch-device');
         }
     }
+
 
     /**
      * Add resize listener for responsive adjustments
@@ -127,18 +129,44 @@ class DraftHelper {
     updateGalleryLayout(gallery) {
         const { screenWidth } = this.deviceInfo;
         
-        if (screenWidth <= 768) {
-            // Use grid layout for mobile
-            gallery.style.display = 'grid';
-            gallery.style.gridTemplateColumns = 'repeat(auto-fill, minmax(60px, 1fr))';
-            gallery.style.gap = '8px';
-            gallery.style.padding = '10px';
-        } else {
-            // Use flex layout for desktop
+        gallery.style.maxWidth = '100%';
+        gallery.style.overflowX = 'hidden';
+        gallery.style.overflowY = 'auto';
+        gallery.style.webkitOverflowScrolling = 'touch';
+        gallery.style.overscrollBehavior = 'contain';
+        gallery.style.touchAction = 'pan-y';
+        
+        if (screenWidth >= 992) {
+            // Desktop and Large Desktop - Use flex layout
             gallery.style.display = 'flex';
             gallery.style.flexWrap = 'wrap';
             gallery.style.gap = '10px';
-            gallery.style.padding = '0';
+            gallery.style.padding = '15px';
+        } else {
+            // Mobile and Tablet - Use grid layout
+            gallery.style.display = 'grid';
+            
+            if (screenWidth >= 768) {
+                // Tablet Landscape
+                gallery.style.gridTemplateColumns = 'repeat(6, 1fr)';
+                gallery.style.gap = '10px';
+                gallery.style.padding = '15px';
+            } else if (screenWidth <= 479) {
+                // Mobile Portrait
+                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
+                gallery.style.gap = '6px';
+                gallery.style.padding = '8px';
+            } else if (screenWidth <= 575) {
+                // Mobile Landscape
+                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
+                gallery.style.gap = '7px';
+                gallery.style.padding = '9px';
+            } else {
+                // Tablet Portrait
+                gallery.style.gridTemplateColumns = 'repeat(5, 1fr)';
+                gallery.style.gap = '8px';
+                gallery.style.padding = '10px';
+            }
         }
     }
 
@@ -223,7 +251,7 @@ class DraftHelper {
             this.heroDataList.push(heroObj);
         }
 
-        this.heroDataList.sort((a, b) => a.Hero.localeCompare(b.Hero));
+        this.heroDataList.sort((a, b) => this.compareHeroPriority(a, b));
     }
 
     /**
@@ -245,8 +273,10 @@ class DraftHelper {
 
         const gallery = gameWrapper.querySelector("#hero-gallery");
         const chooseBoxes = gameWrapper.querySelectorAll(".hero-choose");
-        const filterButtons = gameWrapper.querySelectorAll('#lane-filter button');
+        const filterButtons = gameWrapper.querySelectorAll('#lane-filter input[type="checkbox"]');
         const searchInput = gameWrapper.querySelector(`#hero-search-${index}`);
+        const quickTeam1Btn = gameWrapper.querySelector(".quick-team-btn.team1");
+        const quickTeam2Btn = gameWrapper.querySelector(".quick-team-btn.team2");
         
         const gameState = {
             selectedLanes: new Set(),
@@ -256,6 +286,24 @@ class DraftHelper {
         };
 
         this.gameStates.set(index, gameState);
+
+        // Quick team select (one-click pick)
+        const setActive = (team) => {
+            this.activeQuickTeam = team;
+            quickTeam1Btn?.classList.toggle("active", team === "team1");
+            quickTeam2Btn?.classList.toggle("active", team === "team2");
+        };
+        quickTeam1Btn?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setActive("team1");
+        });
+        quickTeam2Btn?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setActive("team2");
+        });
+        setActive(this.activeQuickTeam);
 
         // Hero selection boxes
         chooseBoxes.forEach(box => {
@@ -272,8 +320,28 @@ class DraftHelper {
             this.bindSearchEvents(searchInput, gallery, gameState);
         }
 
+        // Mobile filter menu
+        this.bindMobileMenuEvents(gameWrapper, gallery, gameState);
+
         // Mobile quick buttons
         this.addMobileQuickButtons(gameWrapper, index);
+        
+        // Add click event to hide popup when clicking outside
+        gameWrapper.addEventListener('click', (e) => {
+            // ถ้าคลิกที่พื้นที่ว่าง (ไม่ใช่ hero หรือ popup)
+            if (!e.target.closest('.hero-wrapper') && 
+                !e.target.closest('.team-selection-popup') && 
+                !e.target.closest('.hero-choose') &&
+                this.selectedHero) {
+                // ยกเลิกการเลือกฮีโร่
+                if (this.selectedElement) {
+                    this.selectedElement.style.outline = "none";
+                }
+                this.selectedHero = null;
+                this.selectedElement = null;
+                this.hideTeamSelectionPopup();
+            }
+        });
     }
 
     /**
@@ -367,6 +435,9 @@ class DraftHelper {
         this.selectedHero = null;
         this.selectedElement = null;
         gameState.isShowingWeakness.set(boxId, false);
+        
+        // ซ่อน popup เลือกทีมหลังจากเลือกฮีโร่เข้าทีมแล้ว
+        this.hideTeamSelectionPopup();
     }
 
     /**
@@ -392,51 +463,102 @@ class DraftHelper {
         }
         
         // Filter heroes from weakness list
-        const filtered = this.heroDataList.filter(h => weaknessList.includes(h.Hero));
-        filtered.sort((a, b) => a.Hero.localeCompare(b.Hero));
+        const filtered = this.heroDataList.filter(h => {
+            // Check if hero name is in weakness list
+            if (weaknessList.includes(h.Hero)) {
+                return true;
+            }
+            
+            // Check if role is in weakness list (case insensitive)
+            if (h.Role && weaknessList.some(weakness => 
+                h.Role.toLowerCase().includes(weakness.toLowerCase()) ||
+                weakness.toLowerCase().includes(h.Role.toLowerCase())
+            )) {
+                return true;
+            }
+            
+            return false;
+        });
         
-        return [...result, ...filtered];
+        filtered.sort((a, b) => a.Hero.localeCompare(b.Hero));
+
+        return [...result, ...this.sortHeroesByPriority(filtered)];
+    }
+
+    compareHeroPriority(a, b) {
+        const tierOrder = { S: 0, A: 1, B: 2, C: 3, D: 4, E: 5, F: 6 };
+        const tierA = (a.Tier || "").toString().trim().toUpperCase();
+        const tierB = (b.Tier || "").toString().trim().toUpperCase();
+        const tierRankA = tierOrder[tierA] ?? 99;
+        const tierRankB = tierOrder[tierB] ?? 99;
+        if (tierRankA !== tierRankB) return tierRankA - tierRankB;
+
+        const laneRankA = this.getLaneRank(a.Lane);
+        const laneRankB = this.getLaneRank(b.Lane);
+        if (laneRankA !== laneRankB) return laneRankA - laneRankB;
+
+        return (a.Hero || "").localeCompare(b.Hero || "");
+    }
+
+    getLaneRank(laneRaw) {
+        const lane = (laneRaw || "").toString().toLowerCase();
+        // Preferred lane order for sorting
+        const laneOrder = ["mid", "abyssal", "support", "darkslayer", "jungle"];
+
+        let best = 99;
+        laneOrder.forEach((key, idx) => {
+            if (lane.includes(key)) best = Math.min(best, idx);
+        });
+        return best;
+    }
+
+    sortHeroesByPriority(list) {
+        return [...list].sort((a, b) => this.compareHeroPriority(a, b));
     }
 
     /**
      * Bind filter button events
      */
-    bindFilterButtonEvents(button, gallery, gameState) {
-        const handleFilterClick = (e) => {
+    bindFilterButtonEvents(checkbox, gallery, gameState) {
+        const handleFilterChange = (e) => {
             e.preventDefault();
             e.stopPropagation();
             
-            const lane = button.dataset.lane;
-            const type = button.dataset.type;
-            const isActive = button.classList.toggle("active");
+            const lane = checkbox.dataset.lane;
+            const type = checkbox.dataset.type;
             
             if (lane) {
-                isActive ? gameState.selectedLanes.add(lane) : gameState.selectedLanes.delete(lane);
+                checkbox.checked ? gameState.selectedLanes.add(lane) : gameState.selectedLanes.delete(lane);
             }
             if (type) {
-                isActive ? gameState.selectedTypes.add(type) : gameState.selectedTypes.delete(type);
+                checkbox.checked ? gameState.selectedTypes.add(type) : gameState.selectedTypes.delete(type);
             }
             
+            this.updateMobileMenuCounts(gameState);
             this.filterAndShow(gallery, gameState);
         };
         
-        // Add both click and touch events
-        button.addEventListener('click', handleFilterClick);
-        button.addEventListener('touchend', handleFilterClick);
+        // Add change event for checkbox
+        checkbox.addEventListener('change', handleFilterChange);
         
-        // Add touch feedback
-        button.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            button.style.transform = 'scale(0.95)';
-            button.style.opacity = '0.8';
-        });
-        
-        button.addEventListener('touchend', () => {
-            setTimeout(() => {
-                button.style.transform = 'scale(1)';
-                button.style.opacity = '1';
-            }, 150);
-        });
+        // Add touch events for mobile (only if touch is supported)
+        if ('ontouchstart' in window) {
+            checkbox.addEventListener('touchstart', (e) => {
+                if (e.cancelable) {
+                    e.preventDefault();
+                }
+                e.stopPropagation();
+            });
+            
+            checkbox.addEventListener('touchend', (e) => {
+                if (e.cancelable) {
+                    e.preventDefault();
+                }
+                e.stopPropagation();
+                checkbox.checked = !checkbox.checked;
+                handleFilterChange(e);
+            });
+        }
     }
 
     /**
@@ -452,6 +574,114 @@ class DraftHelper {
                 this.filterAndShow(gallery, gameState);
             }, 300);
         });
+    }
+
+    /**
+     * Bind mobile menu events
+     */
+    bindMobileMenuEvents(gameWrapper, gallery, gameState) {
+        const mobileMenuButtons = gameWrapper.querySelectorAll('.filter-menu-btn');
+        const mobileMenuContents = gameWrapper.querySelectorAll('.filter-menu-content');
+        const mobileMenuCloses = gameWrapper.querySelectorAll('.menu-close');
+        
+        console.log('Mobile menu elements found:', {
+            buttons: mobileMenuButtons.length,
+            contents: mobileMenuContents.length,
+            closes: mobileMenuCloses.length
+        });
+        
+        // Menu button events
+        mobileMenuButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const targetId = btn.dataset.target;
+                const targetMenu = gameWrapper.querySelector(`#${targetId}`);
+                
+                console.log('Menu button clicked:', targetId, targetMenu);
+                
+                // Close all other menus
+                mobileMenuContents.forEach(menu => {
+                    if (menu !== targetMenu) {
+                        menu.classList.remove('show');
+                    }
+                });
+                
+                // Toggle current menu
+                targetMenu.classList.toggle('show');
+            });
+            
+            // Touch events for mobile (only if touch is supported)
+            if ('ontouchstart' in window) {
+                btn.addEventListener('touchstart', (e) => {
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    e.stopPropagation();
+                });
+                
+                btn.addEventListener('touchend', (e) => {
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    e.stopPropagation();
+                    btn.click();
+                });
+            }
+        });
+        
+        // Close button events
+        mobileMenuCloses.forEach(closeBtn => {
+            closeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const menu = closeBtn.closest('.filter-menu-content');
+                menu.classList.remove('show');
+            });
+            
+            // Touch events for mobile (only if touch is supported)
+            if ('ontouchstart' in window) {
+                closeBtn.addEventListener('touchstart', (e) => {
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    e.stopPropagation();
+                });
+                
+                closeBtn.addEventListener('touchend', (e) => {
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    e.stopPropagation();
+                    closeBtn.click();
+                });
+            }
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.mobile-filter-menu')) {
+                mobileMenuContents.forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+    }
+
+    /**
+     * Update mobile menu counts
+     */
+    updateMobileMenuCounts(gameState) {
+        const laneCount = gameState.selectedLanes.size;
+        const typeCount = gameState.selectedTypes.size;
+        
+        const laneCountEl = document.querySelector('#lane-count');
+        const typeCountEl = document.querySelector('#type-count');
+        
+        if (laneCountEl) laneCountEl.textContent = laneCount;
+        if (typeCountEl) typeCountEl.textContent = typeCount;
     }
 
     /**
@@ -472,8 +702,8 @@ class DraftHelper {
             
             return matchLane && matchType && matchSearch;
         });
-        
-        this.initGallery(filtered, gallery, true);
+
+        this.initGallery(this.sortHeroesByPriority(filtered), gallery, true);
     }
 
     /**
@@ -489,9 +719,11 @@ class DraftHelper {
             case 'dulability': return Number(hero.Dulability) >= 2;
             case 'waveclear': return hero.Ability && hero.Ability.toLowerCase().includes("wave");
             case 'hardlock': return hero.Ability && hero.Ability.toLowerCase().includes("hardlock");
+            case 'lock': return hero.Ability && hero.Ability.toLowerCase().includes("lock");
             case 'sight': return hero.Ability && hero.Ability.toLowerCase().includes("sight");
             case 'push': return hero.Ability && hero.Ability.toLowerCase().includes("push");
             case 'hook': return hero.Ability && hero.Ability.toLowerCase().includes("hook");
+            case 'charge': return hero.Ability && hero.Ability.toLowerCase().includes("charge");
             case 'tierS': return hero.Tier && hero.Tier.toUpperCase().includes("S");
             case 'tierA': return hero.Tier && hero.Tier.toUpperCase().includes("A");
             default: return true;
@@ -502,55 +734,133 @@ class DraftHelper {
      * Add mobile quick buttons for easier hero selection
      */
     addMobileQuickButtons(gameWrapper, index) {
-        const mobileQuickButtons = document.createElement('div');
-        mobileQuickButtons.className = 'mobile-quick-buttons';
-        mobileQuickButtons.innerHTML = `
-            <div class="mobile-buttons-container">
-                <button class="mobile-btn team1-mobile-btn" title="ใส่ทีม 1">
-                    <span class="btn-icon">🔴</span>
-                    <span class="btn-text">ทีม 1</span>
-                </button>
-                <button class="mobile-btn team2-mobile-btn" title="ใส่ทีม 2">
-                    <span class="btn-icon">🔵</span>
-                    <span class="btn-text">ทีม 2</span>
-                </button>
+        // สร้าง popup container
+        const popupContainer = document.createElement('div');
+        popupContainer.className = 'team-selection-popup';
+        popupContainer.style.display = 'none';
+        popupContainer.innerHTML = `
+            <div class="popup-overlay"></div>
+            <div class="popup-content">
+                <div class="popup-header">
+                    <h3>เลือกทีม</h3>
+                    <button class="popup-close">&times;</button>
+                </div>
+                <div class="popup-buttons">
+                    <button class="popup-btn team1-popup-btn">
+                        <span class="btn-icon">🔴</span>
+                        <span class="btn-text">ทีม 1</span>
+                    </button>
+                    <button class="popup-btn team2-popup-btn">
+                        <span class="btn-icon">🔵</span>
+                        <span class="btn-text">ทีม 2</span>
+                    </button>
+                </div>
             </div>
         `;
         
-        const heroSelect = gameWrapper.querySelector('.hero-select');
-        heroSelect.insertBefore(mobileQuickButtons, heroSelect.firstChild);
+        // เพิ่ม popup ไปที่ body
+        document.body.appendChild(popupContainer);
         
-        // Event listeners for mobile buttons with touch support
-        const team1MobileBtn = mobileQuickButtons.querySelector('.team1-mobile-btn');
-        const team2MobileBtn = mobileQuickButtons.querySelector('.team2-mobile-btn');
+        // Event listeners for popup buttons
+        const team1PopupBtn = popupContainer.querySelector('.team1-popup-btn');
+        const team2PopupBtn = popupContainer.querySelector('.team2-popup-btn');
+        const popupClose = popupContainer.querySelector('.popup-close');
+        const popupOverlay = popupContainer.querySelector('.popup-overlay');
         
         const handleTeamSelection = (teamName) => (e) => {
             e.preventDefault();
             e.stopPropagation();
             this.selectHeroToTeam(gameWrapper, teamName, index);
+            this.hideTeamSelectionPopup();
         };
         
-        // Add both click and touch events
-        team1MobileBtn.addEventListener('click', handleTeamSelection('team1'));
-        team1MobileBtn.addEventListener('touchend', handleTeamSelection('team1'));
-        team2MobileBtn.addEventListener('click', handleTeamSelection('team2'));
-        team2MobileBtn.addEventListener('touchend', handleTeamSelection('team2'));
+        const handleClosePopup = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.hideTeamSelectionPopup();
+        };
         
-        // Add touch feedback
-        [team1MobileBtn, team2MobileBtn].forEach(btn => {
+        // Add both click and touch events for better mobile support
+        [team1PopupBtn, team2PopupBtn].forEach((btn, idx) => {
+            const teamName = idx === 0 ? 'team1' : 'team2';
+            
+            // Click events
+            btn.addEventListener('click', handleTeamSelection(teamName));
+            
+            // Touch events for mobile
             btn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 btn.style.transform = 'scale(0.95)';
                 btn.style.opacity = '0.8';
             });
             
-            btn.addEventListener('touchend', () => {
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleTeamSelection(teamName)(e);
                 setTimeout(() => {
                     btn.style.transform = 'scale(1)';
                     btn.style.opacity = '1';
                 }, 150);
             });
+            
+            // Prevent context menu on long press
+            btn.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+            });
         });
+        
+        // Close button events
+        popupClose.addEventListener('click', handleClosePopup);
+        popupClose.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        popupClose.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleClosePopup(e);
+        });
+        
+        // Overlay events
+        popupOverlay.addEventListener('click', handleClosePopup);
+        popupOverlay.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        popupOverlay.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleClosePopup(e);
+        });
+    }
+
+    /**
+     * Show team selection popup
+     */
+    showTeamSelectionPopup() {
+        const popup = document.querySelector('.team-selection-popup');
+        if (popup) {
+            popup.style.display = 'block';
+            // เพิ่ม animation
+            setTimeout(() => {
+                popup.classList.add('show');
+            }, 10);
+        }
+    }
+
+    /**
+     * Hide team selection popup
+     */
+    hideTeamSelectionPopup() {
+        const popup = document.querySelector('.team-selection-popup');
+        if (popup) {
+            popup.classList.remove('show');
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
+        }
     }
 
     /**
@@ -575,6 +885,9 @@ class DraftHelper {
                 }
             }
             this.updateTeam();
+            
+            // ซ่อน popup เลือกทีมหลังจากเลือกทีมแล้ว
+            this.hideTeamSelectionPopup();
         }
     }
 
@@ -621,28 +934,83 @@ class DraftHelper {
 
             wrapper.appendChild(img);
             
-            // Enhanced touch and click handling
+            // Enhanced touch and click handling with scroll detection
+            let touchStartTime = 0;
+            let touchStartY = 0;
+            let touchStartX = 0;
+            let isScrolling = false;
+            
             const handleHeroSelection = (e) => {
+                // ถ้ากำลังเลื่อนอยู่ ให้ข้ามการเลือกฮีโร่
+                if (isScrolling) {
+                    return;
+                }
+                
+                // ตรวจสอบการแตะเฉพาะบนอุปกรณ์สัมผัส
+                if (this.deviceInfo.isTouchDevice) {
+                    const touchDuration = Date.now() - touchStartTime;
+                    if (touchDuration > 200) { // ถ้าแตะนานเกิน 200ms อาจเป็นการเลื่อน
+                        return;
+                    }
+                }
+                
                 e.preventDefault();
                 e.stopPropagation();
+                // One-click pick: place to active team immediately
+                const placed = this.placeHeroToNextEmptySlot(this.activeQuickTeam, img.alt);
+                if (placed) {
+                    img.style.display = "none";
+                    this.updateTeam();
+                    return;
+                }
+
+                // Fallback to original behavior (popup/team selection)
                 this.selectHero(img);
             };
             
             img.addEventListener("click", handleHeroSelection);
-            img.addEventListener("touchend", handleHeroSelection);
             
-            // Touch feedback
+            // Touch events with scroll detection
             img.addEventListener("touchstart", (e) => {
-                e.preventDefault();
+                touchStartTime = Date.now();
+                touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches[0].clientX;
+                isScrolling = false;
+                
+                // ไม่ preventDefault เพื่อให้การเลื่อนทำงานได้
                 img.style.transform = "scale(0.9)";
                 img.style.opacity = "0.7";
             });
             
-            img.addEventListener("touchend", () => {
+            img.addEventListener("touchmove", (e) => {
+                const touchY = e.touches[0].clientY;
+                const touchX = e.touches[0].clientX;
+                const deltaY = Math.abs(touchY - touchStartY);
+                const deltaX = Math.abs(touchX - touchStartX);
+                
+                // ถ้าเลื่อนมากกว่า 5px ถือว่าเป็นการเลื่อน
+                if (deltaY > 5 || deltaX > 5) {
+                    isScrolling = true;
+                    // รีเซ็ต visual feedback เมื่อเริ่มเลื่อน
+                    img.style.transform = "scale(1)";
+                    img.style.opacity = "1";
+                }
+            });
+            
+            img.addEventListener("touchend", (e) => {
                 setTimeout(() => {
                     img.style.transform = "scale(1)";
                     img.style.opacity = "1";
-                }, 150);
+                }, 100);
+                
+                // ถ้าไม่ใช่การเลื่อน ให้เลือกฮีโร่ (เฉพาะบนอุปกรณ์สัมผัส)
+                if (!isScrolling && this.deviceInfo.isTouchDevice) {
+                    // เพิ่มการตรวจสอบระยะทางอีกครั้ง
+                    const touchDuration = Date.now() - touchStartTime;
+                    if (touchDuration < 200) {
+                        handleHeroSelection(e);
+                    }
+                }
             });
             
             gallery.appendChild(wrapper);
@@ -659,6 +1027,27 @@ class DraftHelper {
         this.selectedHero = img.alt;
         this.selectedElement = img;
         img.style.outline = "3px solid red";
+        
+        // แสดง popup เลือกทีมเมื่อมีการเลือกฮีโร่
+        this.showTeamSelectionPopup();
+    }
+
+    placeHeroToNextEmptySlot(teamName, heroName) {
+        if (!teamName || !heroName) return false;
+
+        const gameWrapper = document.querySelector(`.game[data-index="${this.currentGameIndex}"]`);
+        const teamBoxes = gameWrapper?.querySelectorAll(`#${teamName}-container .hero-choose`);
+        if (!teamBoxes || teamBoxes.length === 0) return false;
+
+        for (const box of teamBoxes) {
+            const imgInBox = box.querySelector("img");
+            if (imgInBox && !imgInBox.alt) {
+                imgInBox.src = `./asset/hero/${heroName}.webp`;
+                imgInBox.alt = heroName;
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -898,44 +1287,118 @@ class DraftHelper {
                 <div class="team-section">
                     <div class="team-label1">Team 1</div>
                     <div id="team1-container">
-                        <div class="hero-choose" id="AbyssalDragon1"><img src="/asset/etc/AbyssalDragon.webp" data-default="/asset/etc/AbyssalDragon.webp"></div>
-                        <div class="hero-choose" id="Support1"><img src="/asset/etc/Support.webp" data-default="/asset/etc/Support.webp"></div>
-                        <div class="hero-choose" id="Mid1"><img src="/asset/etc/Mid.webp" data-default="/asset/etc/Mid.webp"></div>
-                        <div class="hero-choose" id="Jungle1"><img src="/asset/etc/Jungle.webp" data-default="/asset/etc/Jungle.webp"></div>
-                        <div class="hero-choose" id="DarkSlayer1"><img src="/asset/etc/DarkSlayer.webp" data-default="/asset/etc/DarkSlayer.webp"></div>
+                        <div class="hero-choose" id="AbyssalDragon1"><img src="./asset/etc/AbyssalDragon.webp" data-default="./asset/etc/AbyssalDragon.webp"></div>
+                        <div class="hero-choose" id="Support1"><img src="./asset/etc/Support.webp" data-default="./asset/etc/Support.webp"></div>
+                        <div class="hero-choose" id="Mid1"><img src="./asset/etc/Mid.webp" data-default="./asset/etc/Mid.webp"></div>
+                        <div class="hero-choose" id="Jungle1"><img src="./asset/etc/Jungle.webp" data-default="./asset/etc/Jungle.webp"></div>
+                        <div class="hero-choose" id="DarkSlayer1"><img src="./asset/etc/DarkSlayer.webp" data-default="./asset/etc/DarkSlayer.webp"></div>
                     </div>
                 </div>
                 <div class="team-section">
                     <div class="team-label2">Team 2</div>
                     <div id="team2-container">
-                        <div class="hero-choose" id="AbyssalDragon2"><img src="/asset/etc/AbyssalDragon.webp" data-default="/asset/etc/AbyssalDragon.webp"></div>
-                        <div class="hero-choose" id="Support2"><img src="/asset/etc/Support.webp" data-default="/asset/etc/Support.webp"></div>
-                        <div class="hero-choose" id="Mid2"><img src="/asset/etc/Mid.webp" data-default="/asset/etc/Mid.webp"></div>
-                        <div class="hero-choose" id="Jungle2"><img src="/asset/etc/Jungle.webp" data-default="/asset/etc/Jungle.webp"></div>
-                        <div class="hero-choose" id="DarkSlayer2"><img src="/asset/etc/DarkSlayer.webp" data-default="/asset/etc/DarkSlayer.webp"></div>
+                        <div class="hero-choose" id="AbyssalDragon2"><img src="./asset/etc/AbyssalDragon.webp" data-default="./asset/etc/AbyssalDragon.webp"></div>
+                        <div class="hero-choose" id="Support2"><img src="./asset/etc/Support.webp" data-default="./asset/etc/Support.webp"></div>
+                        <div class="hero-choose" id="Mid2"><img src="./asset/etc/Mid.webp" data-default="./asset/etc/Mid.webp"></div>
+                        <div class="hero-choose" id="Jungle2"><img src="./asset/etc/Jungle.webp" data-default="./asset/etc/Jungle.webp"></div>
+                        <div class="hero-choose" id="DarkSlayer2"><img src="./asset/etc/DarkSlayer.webp" data-default="./asset/etc/DarkSlayer.webp"></div>
                     </div>
                 </div>
             </div>
             <div class="content" id="content-0">
                 <div class="hero-select">
+                    <div class="quick-team-picker">
+                        <span class="quick-team-label">Quick Pick:</span>
+                        <button class="quick-team-btn team1" type="button">Team 1</button>
+                        <button class="quick-team-btn team2" type="button">Team 2</button>
+                    </div>
                     <div id="lane-filter" style="margin-bottom: 10px;">
-                        <button data-lane="Abyssal">Abyssal</button>
-                        <button data-lane="Support">Support</button>
-                        <button data-lane="Mid">Mid</button>
-                        <button data-lane="Jungle">Jungle</button>
-                        <button data-lane="DarkSlayer">Dark</button>
-                        <button data-type="Early">ต้น</button>
-                        <button data-type="Late">เลท</button>
-                        <button data-type="burst">เบิร์ส</button>
-                        <button data-type="cc">CC</button>
-                        <button data-type="dulability">อึด</button>
-                        <button data-type="waveclear">Wave</button>
-                        <button data-type="hardlock">จับตาย</button>
-                        <button data-type="sight">เปิดแมพ</button>
-                        <button data-type="push">ผลัก</button>
-                        <button data-type="hook">เกี่ยว</button>
-                        <button data-type="tierS">S</button>
-                        <button data-type="tierA">A</button>
+                        <!-- Desktop Filter -->
+                        <div class="desktop-filter">
+                            <div class="filter-group">
+                                <h4>Lane:</h4>
+                                <label class="filter-checkbox"><input type="checkbox" data-lane="Abyssal"> Abyssal</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-lane="Support"> Support</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-lane="Mid"> Mid</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-lane="Jungle"> Jungle</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-lane="DarkSlayer"> Dark</label>
+                            </div>
+                            <div class="filter-group">
+                                <h4>Type:</h4>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="Early"> ต้น</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="Late"> เลท</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="burst"> เบิร์ส</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="cc"> CC</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="dulability"> แทงค์</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="waveclear"> เวฟเคลียร์</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="hardlock"> จับตาย</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="lock"> ล็อก</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="sight"> เปิดแมพ</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="push"> ผลัก</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="hook"> ดึง</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="charge"> ไถ</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="tierS"> แรงค์ S</label>
+                                <label class="filter-checkbox"><input type="checkbox" data-type="tierA"> แรงค์ A</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Mobile Filter Menu -->
+                        <div class="mobile-filter-menu">
+                            <div class="filter-menu-bar">
+                                <button class="filter-menu-btn" data-target="lane-menu">
+                                    <span class="menu-icon">🎯</span>
+                                    <span class="menu-text">Lane</span>
+                                    <span class="menu-count" id="lane-count">0</span>
+                                </button>
+                                <button class="filter-menu-btn" data-target="type-menu">
+                                    <span class="menu-icon">⚡</span>
+                                    <span class="menu-text">Type</span>
+                                    <span class="menu-count" id="type-count">0</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Lane Menu -->
+                            <div class="filter-menu-content" id="lane-menu">
+                                <div class="menu-header">
+                                    <h4>Lane Filter</h4>
+                                    <button class="menu-close">&times;</button>
+                                </div>
+                                <div class="menu-options">
+                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Abyssal"> Abyssal</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Support"> Support</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Mid"> Mid</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Jungle"> Jungle</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-lane="DarkSlayer"> Dark</label>
+                                </div>
+                            </div>
+                            
+                            <!-- Type Menu -->
+                            <div class="filter-menu-content" id="type-menu">
+                                <div class="menu-header">
+                                    <h4>Type Filter</h4>
+                                    <button class="menu-close">&times;</button>
+                                </div>
+                                <div class="menu-options">
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="Early"> ต้น</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="Late"> เลท</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="burst"> เบิร์ส</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="cc"> CC</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="dulability"> แทงค์</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="waveclear"> Wave</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="hardlock"> จับตาย</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="lock"> ล็อก</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="sight"> เปิดแมพ</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="push"> ผลัก</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="hook"> ดึง</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="charge"> ไถ</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="tierS"> S</label>
+                                    <label class="filter-checkbox"><input type="checkbox" data-type="tierA"> A</label>
+                                </div>
+                            </div>
+                            
+                            <!-- Overlay for mobile menu -->
+                            <div class="filter-menu-overlay" id="filter-overlay"></div>
+                        </div>
                     </div>
                     <input type="text" id="hero-search-0" placeholder="ค้นหาชื่อฮีโร่..." style="margin-bottom:10px;width:100%;max-width:300px;">
                     <div id="hero-gallery" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>

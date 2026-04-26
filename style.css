@@ -9,9 +9,11 @@
 body {
     margin: 0;
     font-family: 'Noto Sans Thai', 'Segoe UI', Arial, sans-serif;
-    background-image: url(/asset/etc/background.jpg);
+    background-image: url(./asset/etc/background.jpg);
     background-size: cover;       
     background-repeat: no-repeat; 
+    background-position: center center;
+    background-attachment: fixed;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
@@ -19,17 +21,34 @@ body {
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.game-container {
+    margin: 0;
+    padding: 0;
 }
 
 /* Device-specific styles */
 .mobile .hero-wrapper img {
-    width: var(--hero-size) !important;
-    height: var(--hero-size) !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    aspect-ratio: 1 !important;
 }
 
 .tablet .hero-wrapper img {
-    width: calc(var(--hero-size) + 10px) !important;
-    height: calc(var(--hero-size) + 10px) !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    aspect-ratio: 1 !important;
 }
 
 .touch-device .hero-choose,
@@ -133,15 +152,17 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    padding: 0 20px 0 20px;
+    padding: 0 20px 10px 20px;
     justify-content: space-between;
     background: #2c2c2cd8;
     margin-top: 0; /* ไม่เว้นช่องว่างด้านบน */
+    margin-bottom: 0;
 }
 #team1-container,
 #team2-container {
   display: flex;
   gap: 10px;
+  margin-top: 0;
 }
 img.disabled {
   cursor: not-allowed;
@@ -170,6 +191,9 @@ img.disabled {
   gap: 20px;
   padding: 20px;
   background: rgba(0, 0, 0, 0.781);
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 .stat-text {
   color: white;
@@ -190,10 +214,70 @@ img.disabled {
   width: 100%;
   border: 4px solid #ccc;
   padding: 10px;
-}
-.hero-wrapper img {
   max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Quick team picker (one-click pick) */
+.quick-team-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 10px 0;
+}
+
+.quick-team-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.quick-team-btn {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 900;
+  transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.quick-team-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.quick-team-btn.active {
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.35) 0%, rgba(102, 126, 234, 0.35) 100%);
+  border-color: rgba(78, 205, 196, 0.75);
+  box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.20) inset;
+}
+.hero-wrapper {
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  aspect-ratio: 1;
+  width: 100%;
   height: auto;
+  overflow: hidden;
+  border-radius: 4px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.hero-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  aspect-ratio: 1;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 #hero-gallery {
@@ -278,7 +362,8 @@ img.disabled {
 }
 
 .game {
-  margin-top: 20px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 .team-stats {
   flex: 1;
@@ -297,19 +382,22 @@ img.disabled {
   font-weight: bold;
   font-size: 25px;
   text-align: left;
+  margin-top: 0;
   margin-bottom: 5px;
   color: white;
 }
 .team-label2 {
   font-weight: bold;
   font-size: 25px;
-  text-align: ight;
+  text-align: right;
+  margin-top: 0;
   margin-bottom: 5px;
   color: white;
 }
 .team-section {
   display: flex;
   flex-direction: column;
+  margin-top: 0;
 }
 @media screen and (max-width: 768px) {
   .hero-choose {
@@ -324,8 +412,10 @@ img.disabled {
   }
 
   .hero-wrapper img {
-    width: 60px;
-    height: 60px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1;
   }
 
   .hero-select {
@@ -346,9 +436,15 @@ img.disabled {
 
   #hero-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
     padding: 10px;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
   }
 
   #lane-filter {
@@ -377,66 +473,741 @@ img.disabled {
 
 }
 
-/* Mobile Quick Buttons สำหรับมือถือ */
-.mobile-quick-buttons {
-    margin-bottom: 15px;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+/* Team Selection Popup */
+.team-selection-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: none;
 }
 
-.mobile-buttons-container {
-    display: flex;
-    gap: 8px;
-    justify-content: space-between;
-    margin-bottom: 12px;
+.popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    /* Mobile touch improvements */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
-.mobile-btn {
-    flex: 1;
-    padding: 10px 8px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
+.popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: #2c2c2c;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #444;
+    min-width: 280px;
+    opacity: 0;
     transition: all 0.3s ease;
-    font-size: 14px;
+}
+
+.team-selection-popup.show .popup-content {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.popup-header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    gap: 3px;
-    min-height: 45px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #444;
+}
+
+.popup-header h3 {
+    color: white;
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.popup-close {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    /* Mobile touch improvements */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.popup-close:hover {
+    background: #444;
+    color: white;
+}
+
+.popup-buttons {
+    display: flex;
+    gap: 15px;
     justify-content: center;
 }
 
-.team1-mobile-btn {
+.popup-btn {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    min-height: 80px;
+    justify-content: center;
+    /* Mobile touch improvements */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.team1-popup-btn {
     background: linear-gradient(45deg, #ff6b6b, #ee5a24);
     color: white;
 }
 
-.team1-mobile-btn:active {
+.team1-popup-btn:hover {
     background: linear-gradient(45deg, #ff5252, #d63031);
-    transform: scale(0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
 }
 
-.team2-mobile-btn {
+.team2-popup-btn {
     background: linear-gradient(45deg, #4ecdc4, #44a08d);
     color: white;
 }
 
-.team2-mobile-btn:active {
+.team2-popup-btn:hover {
     background: linear-gradient(45deg, #26a69a, #00897b);
-    transform: scale(0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
 }
 
-.btn-icon {
-    font-size: 16px;
+.popup-btn .btn-icon {
+    font-size: 24px;
 }
 
-.btn-text {
-    font-size: 12px;
+.popup-btn .btn-text {
+    font-size: 14px;
     font-weight: bold;
+}
+
+/* Mobile responsive for popup */
+@media screen and (max-width: 768px) {
+    .popup-content {
+        min-width: 250px;
+        padding: 15px;
+        margin: 20px;
+    }
+    
+    /* Prevent horizontal scrolling on mobile */
+    body {
+        overflow-x: hidden;
+        max-width: 100vw;
+        background-size: contain;
+        background-position: center center;
+    }
+    
+    .game-container {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    
+    .ban-pick {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    
+    .popup-header h3 {
+        font-size: 18px;
+    }
+    
+    .popup-buttons {
+        gap: 10px;
+    }
+    
+    .popup-btn {
+        padding: 12px 15px;
+        font-size: 14px;
+        min-height: 70px;
+        /* Enhanced touch targets for mobile */
+        min-width: 100px;
+    }
+    
+    .popup-btn .btn-icon {
+        font-size: 20px;
+    }
+    
+    .popup-btn .btn-text {
+        font-size: 12px;
+    }
+    
+    /* Active states for touch */
+    .popup-btn:active {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+    
+    .popup-close:active {
+        background: #444;
+        color: white;
+        transform: scale(0.9);
+    }
+    
+    /* Filter checkboxes for mobile */
+    .filter-group {
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .filter-group h4 {
+        font-size: 12px;
+    }
+    
+    .filter-checkbox {
+        font-size: 11px;
+        margin: 4px 6px 4px 0;
+    }
+    
+    .filter-checkbox input[type="checkbox"] {
+        width: 14px;
+        height: 14px;
+        transform: scale(1.2);
+    }
+    
+    /* Toggle desktop/mobile filter */
+    .desktop-filter {
+        display: none;
+    }
+    
+    .mobile-filter-menu {
+        display: block;
+    }
+    
+    /* Adjust mobile filter menu buttons */
+    .filter-menu-btn {
+        padding: 8px 12px;
+    }
+    
+    .menu-icon {
+        font-size: 16px;
+    }
+    
+    .menu-text {
+        font-size: 12px;
+    }
+    
+    .menu-count {
+        font-size: 11px;
+        min-width: 20px;
+        padding: 1px 6px;
+    }
+}
+
+@media screen and (max-width: 479px) {
+    .popup-content {
+        min-width: 220px;
+        padding: 12px;
+        margin: 15px;
+    }
+    
+    .popup-header h3 {
+        font-size: 16px;
+    }
+    
+    .popup-buttons {
+        gap: 8px;
+    }
+    
+    .popup-btn {
+        padding: 10px 12px;
+        font-size: 12px;
+        min-height: 60px;
+        /* Enhanced touch targets for small screens */
+        min-width: 90px;
+    }
+    
+    .popup-btn .btn-icon {
+        font-size: 18px;
+    }
+    
+    .popup-btn .btn-text {
+        font-size: 10px;
+    }
+    
+    /* Active states for touch on small screens */
+    .popup-btn:active {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+    
+    .popup-close:active {
+        background: #444;
+        color: white;
+        transform: scale(0.9);
+    }
+    
+    /* Filter checkboxes for small screens */
+    .filter-group {
+        padding: 6px;
+        margin-bottom: 8px;
+    }
+    
+    .filter-group h4 {
+        font-size: 11px;
+    }
+    
+    .filter-checkbox {
+        font-size: 10px;
+        margin: 3px 4px 3px 0;
+    }
+    
+    .filter-checkbox input[type="checkbox"] {
+        width: 12px;
+        height: 12px;
+        transform: scale(1.3);
+    }
+    
+    /* Toggle desktop/mobile filter */
+    .desktop-filter {
+        display: none;
+    }
+    
+    .mobile-filter-menu {
+        display: block;
+    }
+    
+    /* Adjust mobile filter menu buttons for small screens */
+    .filter-menu-btn {
+        padding: 6px 10px;
+    }
+    
+    .menu-icon {
+        font-size: 14px;
+    }
+    
+    .menu-text {
+        font-size: 11px;
+    }
+    
+    .menu-count {
+        font-size: 10px;
+        min-width: 18px;
+        padding: 1px 5px;
+    }
+    
+    .filter-menu-content {
+        width: 95%;
+            max-height: 90vh;
+    }
+    
+    .menu-header {
+        padding: 12px 15px;
+    }
+    
+    .menu-header h4 {
+        font-size: 16px;
+    }
+    
+    .menu-options {
+        padding: 15px;
+        gap: 8px;
+        grid-template-columns: 1fr 1fr;
+        max-height: calc(90vh - 60px);
+    }
+    
+    .menu-options .filter-checkbox {
+        padding: 6px;
+        font-size: 11px;
+        min-height: 35px;
+    }
+}
+
+/* Desktop and Mobile Filter Toggle */
+.desktop-filter {
+    display: block;
+}
+
+.mobile-filter-menu {
+    display: none;
+}
+
+/* Force mobile menu to show on mobile devices */
+@media screen and (max-width: 768px) {
+    .desktop-filter {
+        display: none !important;
+    }
+    
+    .mobile-filter-menu {
+        display: block !important;
+    }
+}
+
+/* Filter Checkboxes */
+.filter-group {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-group h4 {
+    color: #fff;
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-checkbox {
+    display: inline-flex;
+    align-items: center;
+    margin: 5px 8px 5px 0;
+    cursor: pointer;
+    font-size: 12px;
+    color: #ccc;
+    transition: color 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.filter-checkbox:hover {
+    color: #fff;
+}
+
+.filter-checkbox input[type="checkbox"] {
+    margin-right: 6px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #4ecdc4;
+    transform: scale(1.1);
+}
+
+.filter-checkbox input[type="checkbox"]:checked {
+    accent-color: #4ecdc4;
+}
+
+.filter-checkbox:has(input:checked) {
+    color: #4ecdc4;
+    font-weight: bold;
+}
+
+/* Mobile Filter Menu Styles */
+.filter-menu-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.filter-menu-btn {
+    flex: 1;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.filter-menu-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.filter-menu-btn:active {
+    transform: translateY(0);
+}
+
+.menu-icon {
+    font-size: 18px;
+}
+
+.menu-text {
+    font-size: 14px;
+}
+
+.menu-count {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    min-width: 24px;
+    text-align: center;
+}
+
+/* Mobile Filter Menu Overlay */
+.filter-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.filter-menu-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+.filter-menu-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    width: 90%;
+    max-width: 400px;
+    max-height: 85vh;
+    background: #2c2c2c;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #444;
+    z-index: 10001;
+    display: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.filter-menu-content.show {
+    display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid #444;
+}
+
+.menu-header h4 {
+    color: white;
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.menu-close {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.menu-close:hover {
+    background: #444;
+    color: white;
+}
+
+.menu-close:active {
+    background: #555;
+    transform: scale(0.9);
+}
+
+.menu-options {
+    padding: 20px;
+    max-height: calc(85vh - 80px);
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    /* เพิ่ม scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: #4ecdc4 #2c2c2c;
+}
+
+.menu-options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.menu-options::-webkit-scrollbar-track {
+    background: #2c2c2c;
+    border-radius: 3px;
+}
+
+.menu-options::-webkit-scrollbar-thumb {
+    background: #4ecdc4;
+    border-radius: 3px;
+}
+
+.menu-options::-webkit-scrollbar-thumb:hover {
+    background: #26a69a;
+}
+
+/* Mobile touch scrolling improvements */
+.menu-options {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* Ensure proper scrolling on mobile */
+@media screen and (max-width: 768px) {
+    .filter-menu-content {
+        max-height: 90vh;
+    }
+    
+    .menu-options {
+        max-height: calc(90vh - 80px);
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Mobile scrollbar styling - larger size */
+    .menu-options::-webkit-scrollbar {
+        width: 12px;
+    }
+    
+    .menu-options::-webkit-scrollbar-track {
+        background: #2c2c2c;
+        border-radius: 6px;
+    }
+    
+    .menu-options::-webkit-scrollbar-thumb {
+        background: #4ecdc4;
+        border-radius: 6px;
+        border: 2px solid #2c2c2c;
+    }
+    
+    .menu-options::-webkit-scrollbar-thumb:hover {
+        background: #26a69a;
+    }
+    
+    .menu-options::-webkit-scrollbar-thumb:active {
+        background: #1e7d72;
+    }
+    
+    /* Mobile scrollbar for hero gallery */
+    .hero-gallery::-webkit-scrollbar {
+        width: 12px;
+    }
+    
+    .hero-gallery::-webkit-scrollbar-track {
+        background: #2c2c2c;
+        border-radius: 6px;
+    }
+    
+    .hero-gallery::-webkit-scrollbar-thumb {
+        background: #4ecdc4;
+        border-radius: 6px;
+        border: 2px solid #2c2c2c;
+    }
+    
+    .hero-gallery::-webkit-scrollbar-thumb:hover {
+        background: #26a69a;
+    }
+    
+    .hero-gallery::-webkit-scrollbar-thumb:active {
+        background: #1e7d72;
+    }
+    
+    /* Mobile scrollbar for ban-pick section */
+    .ban-pick::-webkit-scrollbar {
+        width: 12px;
+    }
+    
+    .ban-pick::-webkit-scrollbar-track {
+        background: #2c2c2c;
+        border-radius: 6px;
+    }
+    
+    .ban-pick::-webkit-scrollbar-thumb {
+        background: #4ecdc4;
+        border-radius: 6px;
+        border: 2px solid #2c2c2c;
+    }
+    
+    .ban-pick::-webkit-scrollbar-thumb:hover {
+        background: #26a69a;
+    }
+    
+    .ban-pick::-webkit-scrollbar-thumb:active {
+        background: #1e7d72;
+    }
+}
+
+.menu-options .filter-checkbox {
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin: 0;
+    transition: all 0.2s ease;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 40px;
+}
+
+.menu-options .filter-checkbox:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Responsive Design for All Platforms */
@@ -449,7 +1220,7 @@ img.disabled {
     }
     
     .ban-pick {
-        padding: 20px 40px;
+        padding: 0 40px 15px 40px;
     }
     
     .hero-choose {
@@ -457,16 +1228,47 @@ img.disabled {
         height: 80px;
     }
     
+    .hero-wrapper {
+        width: 80px;
+        height: 80px;
+        aspect-ratio: 1;
+        overflow: hidden;
+        border-radius: 4px;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .hero-wrapper:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
     .hero-wrapper img {
-        width: 90px;
-        height: 90px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        aspect-ratio: 1;
+    }
+    
+    #hero-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 15px;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
 }
 
 /* Desktop (992px - 1199px) */
 @media screen and (min-width: 992px) and (max-width: 1199px) {
     .ban-pick {
-        padding: 15px 30px;
+        padding: 0 30px 12px 30px;
     }
     
     .hero-choose {
@@ -474,23 +1276,54 @@ img.disabled {
         height: 75px;
     }
     
+    .hero-wrapper {
+        width: 75px;
+        height: 75px;
+        aspect-ratio: 1;
+        overflow: hidden;
+        border-radius: 4px;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .hero-wrapper:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
     .hero-wrapper img {
-        width: 85px;
-        height: 85px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        aspect-ratio: 1;
+    }
+    
+    #hero-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 15px;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
 }
 
 /* Tablet Landscape (768px - 991px) */
 @media screen and (min-width: 768px) and (max-width: 991px) {
     .ban-pick {
-        padding: 10px 20px;
+        padding: 0 20px 10px 20px;
         flex-direction: column;
         align-items: center;
     }
     
     .team-section {
         width: 100%;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
     
     .team-label1, .team-label2 {
@@ -508,8 +1341,23 @@ img.disabled {
     }
     
     .hero-wrapper img {
-        width: 75px;
-        height: 75px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        aspect-ratio: 1;
+    }
+    
+    #hero-gallery {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+        padding: 15px;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
     
     .content {
@@ -531,34 +1379,62 @@ img.disabled {
 /* Tablet Portrait (576px - 767px) */
 @media screen and (min-width: 576px) and (max-width: 767px) {
     .ban-pick {
-        padding: 8px 15px;
+        padding: 0 12px 8px 12px;
         flex-direction: column;
         align-items: center;
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    
+    #hero-gallery {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        padding: 10px;
+        max-width: 100%;
+        overflow-x: hidden;
     }
     
     .team-section {
         width: 100%;
-        margin-bottom: 12px;
-    }
-    
-    .team-label1, .team-label2 {
-        font-size: 18px;
-        text-align: center;
+        margin-bottom: 8px;
+        max-width: 100%;
     }
     
     #team1-container, #team2-container {
         justify-content: center;
-        gap: 8px;
+        gap: 5px;
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .team-label1, .team-label2 {
+        font-size: 16px;
+        text-align: center;
+        margin-bottom: 3px;
+    }
+    
+    #team1-container, #team2-container {
+        justify-content: center;
+        gap: 6px;
     }
     
     .hero-choose {
-        width: 60px;
-        height: 60px;
+        width: 55px;
+        height: 55px;
     }
     
     .hero-wrapper img {
-        width: 70px;
-        height: 70px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        aspect-ratio: 1;
+    }
+    
+    /* ลดขนาด hero gallery สำหรับแท็บเล็ต */
+    #hero-gallery {
+        max-height: 220px;
+        overflow-y: auto;
     }
     
     .content {
@@ -582,57 +1458,106 @@ img.disabled {
         font-size: 16px;
     }
     
+    /* ลดขนาดปุ่มเลือกทีมสำหรับแท็บเล็ตแนวตั้ง */
     .mobile-btn {
-        padding: 10px 8px;
-        font-size: 14px;
-        min-height: 50px;
+        padding: 8px 10px;
+        font-size: 13px;
+        min-height: 45px;
+        border-radius: 6px;
     }
     
     .btn-icon { 
-        font-size: 18px; 
+        font-size: 16px; 
     }
     
     .btn-text { 
-        font-size: 12px; 
+        font-size: 11px; 
+    }
+    
+    /* ลดขนาด mobile quick buttons container */
+    .mobile-quick-buttons {
+        margin-bottom: 12px;
+        padding: 10px;
+    }
+    
+    .mobile-buttons-container {
+        gap: 8px;
+        margin-bottom: 10px;
     }
 }
 
 /* Mobile Landscape (480px - 575px) */
 @media screen and (min-width: 480px) and (max-width: 575px) {
     .ban-pick {
-        padding: 6px 10px;
+        padding: 0 8px 6px 8px;
         flex-direction: column;
         align-items: center;
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    
+    #hero-gallery {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 7px;
+        padding: 9px;
+        max-width: 100%;
+        overflow-x: hidden;
     }
     
     .team-section {
         width: 100%;
-        margin-bottom: 10px;
-    }
-    
-    .team-label1, .team-label2 {
-        font-size: 16px;
-        text-align: center;
+        margin-bottom: 6px;
+        max-width: 100%;
     }
     
     #team1-container, #team2-container {
         justify-content: center;
-        gap: 6px;
+        gap: 4px;
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .team-label1, .team-label2 {
+        font-size: 14px;
+        text-align: center;
+        margin-bottom: 3px;
+    }
+    
+    #team1-container, #team2-container {
+        justify-content: center;
+        gap: 5px;
     }
     
     .hero-choose {
-        width: 55px;
-        height: 55px;
+        width: 50px;
+        height: 50px;
     }
     
     .hero-wrapper img {
-        width: 65px;
-        height: 65px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        aspect-ratio: 1;
+    }
+    
+    /* Prevent background overflow on mobile landscape */
+    body {
+        background-size: contain;
+        background-position: center center;
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    
+    /* ลดขนาด hero gallery สำหรับมือถือแนวนอน */
+    #hero-gallery {
+        max-height: 180px;
+        overflow-y: auto;
     }
     
     .content {
-        padding: 10px;
-        gap: 12px;
+        padding: 8px;
+        gap: 10px;
     }
     
     #lane-filter {
@@ -651,57 +1576,106 @@ img.disabled {
         font-size: 14px;
     }
     
+    /* ลดขนาดปุ่มเลือกทีมสำหรับมือถือแนวนอน */
     .mobile-btn {
-        padding: 8px 6px;
-        font-size: 12px;
-        min-height: 45px;
+        padding: 6px 8px;
+        font-size: 11px;
+        min-height: 38px;
+        border-radius: 6px;
     }
     
     .btn-icon { 
-        font-size: 16px; 
+        font-size: 14px; 
     }
     
     .btn-text { 
-        font-size: 10px; 
+        font-size: 9px; 
+    }
+    
+    /* ลดขนาด mobile quick buttons container */
+    .mobile-quick-buttons {
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+    
+    .mobile-buttons-container {
+        gap: 8px;
+        margin-bottom: 10px;
     }
 }
 
 /* Mobile Portrait (320px - 479px) */
 @media screen and (max-width: 479px) {
     .ban-pick {
-        padding: 4px 8px;
+        padding: 0 5px 4px 5px;
         flex-direction: column;
         align-items: center;
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    
+    #hero-gallery {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+        padding: 8px;
+        max-width: 100%;
+        overflow-x: hidden;
     }
     
     .team-section {
         width: 100%;
-        margin-bottom: 8px;
-    }
-    
-    .team-label1, .team-label2 {
-        font-size: 14px;
-        text-align: center;
+        margin-bottom: 4px;
+        max-width: 100%;
     }
     
     #team1-container, #team2-container {
         justify-content: center;
-        gap: 4px;
+        gap: 2px;
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .team-label1, .team-label2 {
+        font-size: 12px;
+        text-align: center;
+        margin-bottom: 2px;
+    }
+    
+    #team1-container, #team2-container {
+        justify-content: center;
+        gap: 3px;
     }
     
     .hero-choose {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
     }
     
     .hero-wrapper img {
-        width: 60px;
-        height: 60px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        aspect-ratio: 1;
+    }
+    
+    /* Prevent background overflow on mobile portrait */
+    body {
+        background-size: contain;
+        background-position: center center;
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    
+    /* ลดขนาด hero gallery สำหรับมือถือ */
+    #hero-gallery {
+        max-height: 200px;
+        overflow-y: auto;
     }
     
     .content {
         padding: 8px;
-        gap: 10px;
+        gap: 8px;
     }
     
     #lane-filter {
@@ -720,38 +1694,51 @@ img.disabled {
         font-size: 12px;
     }
     
+    /* ลดขนาดปุ่มเลือกทีมสำหรับมือถือ */
     .mobile-btn {
-        padding: 6px 4px;
-        font-size: 10px;
-        min-height: 40px;
+        padding: 4px 6px;
+        font-size: 9px;
+        min-height: 32px;
+        border-radius: 6px;
     }
     
     .btn-icon { 
-        font-size: 14px; 
+        font-size: 12px; 
     }
     
     .btn-text { 
-        font-size: 9px; 
+        font-size: 8px; 
+    }
+    
+    /* ลดขนาด mobile quick buttons container */
+    .mobile-quick-buttons {
+        margin-bottom: 8px;
+        padding: 8px;
+    }
+    
+    .mobile-buttons-container {
+        gap: 6px;
+        margin-bottom: 8px;
     }
     
     .hero-select {
-        padding: 8px;
+        padding: 6px;
     }
     
     .display {
-        padding: 8px;
+        padding: 6px;
     }
     
     .stat-row {
-        gap: 10px;
+        gap: 8px;
     }
     
     .warning-container {
-        margin-top: 8px;
+        margin-top: 6px;
     }
     
     .cc-warning {
-        font-size: 12px;
+        font-size: 11px;
     }
 }
 
@@ -763,6 +1750,10 @@ img.disabled {
     }
     
     .hero-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        aspect-ratio: 1;
         min-height: 44px;
         min-width: 44px;
     }

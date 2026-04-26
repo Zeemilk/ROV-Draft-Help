@@ -1,125 +1,125 @@
-﻿,Hero,Lane,Damage Type,Time,Damage,Dulability,CC,Mobility,Tier,Ability,Weakness,หมายเหตุ
-1,Airi,DarkSlayer,True Damage,Mid/Late,5,1,2,2,A,Blood/CCResist/Dash/Shield/Stun,Soul_Scroll/,Damage เต็ม 5
-2,Aleister,Mid,Magic Damage,All,3,1,2,0,B,HardLock/Stun/Wave,Yue,Dulability เต็ม 4
-3,Alice,Mid/Support,Magic Damage,Late,4,1,3,1,A,Burst/Shield/Slow/Speed/Stun/Wave,Yue,CC เต็ม 3
-4,Allain,DarkSlayer,Physical Damage,Late,3,2,0,1,B,Blood/CCResist/Dash/Immortal,Soul_Scroll,Mobility เต็ม 3
-5,Amily,DarkSlayer,Physical Damage,All,3,2,1,0,B,CCResist/Stun,,Barrier = สร้างโล่ป้องกัน
-6,Annette,Mid/Support,Magic Damage,Mid/Late,3,1,1,1,B,Dash/Disable/Push/Shield/Wave,Yue,Blood = เด้งเลือด
-7,Aoi,Jungle,Physical Damage,Early/Mid,5,2,1,3,S,Burst/Dash/Disable/Shield,Billow/Keera/Eland'orr,Buff = บัพเพื่อน
-8,Arduin,Support,Physical Damage,All,3,3,2,2,A,Dash/Shield/Stun,,Burn = เผา
-9,Arthur,DarkSlayer,Physical Damage,All,3,4,1,2,B,Blood/Speed/Stun,,Burst = เบิร์ส
-10,Arum,Support,Magic Damage,All,3,4,2,0,B,Blood/HardLock/Speed,,CCResist = ต้านCC
-11,Astrid,Jungle/DarkSlayer,Physical Damage,All,3,2,1,1,B,Dash/Immortal,,Dash = ข้ามกำแพง
-12,Ata,DarkSlayer/Support,Physical Damage,All,3,3,2,2,B,Blood/Dash/Lock/Stun,,Debuff = ดีบัพศัตรู
-13,Aya,Mid/Support,Magic Damage,Late,3,1,1,0,A,Dash/Disable/Silent/Slow/Sight/Wave,,Disable = ไม่ตกเป็นเป้า
-15,Azzen'Ka,Mid,Magic Damage,All,4,1,3,0,B,Burst/Push/Stun/Wave,Yue,HardLock = ล็อคล้างไม่ได้
-16,Baldum,Support,Physical Damage,All,2,3,2,1,B,HardLock/Speed,,HardStun = สตั๊นป้อม
-18,Bijan,Jungle/DarkSlayer,Physical Damage,All,4,1,2,2,A,Burst/CCResist/Speed/Stun,,Heal = ฮีลเพื่อน
-17,Billow,Jungle/DarkSlayer,Physical Damage,Early/Mid,5,2,1,3,S,Blood/Burst/Dash/Hook/Shield,Soul_Scroll/Eland'orr/Fennik/Wonder_Woman,Hook = ดึงศัตรูเข้ามาหาตน
-14,Biron,DarkSlayer,Physical Damage,All,4,1,1,1,A,Burst/Dash/Shield/Stun,,Immortal = อมตะ
-19,Bolt_Baron,Jungle/DarkSlayer,Magic Damage,Late,4,2,1,2,A,Blood/CCResist/Dash/Push/Shield,Soul_Scroll/Florentino/Qi/Murad/Eland'orr/Billow/Keera,Invisible = ล่องหน
-20,Bonnie,Mid,Magic Damage,All,3,1,2,0,B,Lock/Hook/Sight/Slow/Stun/Wave,Yue,Lock = จำกัดการเคลื่อนที่
-21,Bright,Abyssal,True Damage,Late,5,1,1,1,B,Dash/Immortal/Sight/Stun,Arum/Aleister,Push = ผลักศัตรูออกไปจากตน
-22,Butterfly,Jungle,Physical Damage,Early/Mid,5,2,0,1,A,Blood/Burst/Dash/Shield/Speed,Soul_Scroll,Range = ระยะไกล
-23,Celica,Abyssal,Physical Damage,All,4,1,0,1,B,Range/Sight/Speed,Elsu/Valhein/Stuart,Shield = เด้งโล่
-24,Capheny,Abyssal,Physical Damage,All,4,2,0,1,S,Burst/Dash/Range/Speed/Wave,Valhein/Violet/Stuart/Tel'Annas,Sight = เปิดแมพ
-25,Charlotte,DarkSlayer,Physical Damage,All,3,3,1,2,B,Blood/CCResist/Dash/Speed/Stun,Soul_Scroll,Silent = ใบ้
-26,Chaugnar,Support,Magic Damage,All,1,2,0,0,B,CCResist,,Slow = สโลว์
-27,Cresht,Support,Physical Damage,All,2,4,2,1,A,CCResist/Push/Shield/Stun,,Speed = เพิ่มความเร็วการเคลื่อนที่
-28,D'Arcy,Jungle/Mid,Magic Damage,Mid/Late,4,1,1,1,B,Burst/Dash/Disable/Hook/Speed/Wave,,Steal = ขโมยพลังโจมตี
-29,Dextra,Jungle/DarkSlayer,Physical Damage,Late,3,1,0,0,B,Blood/Hook/Speed/Steal,Soul_Scroll,Stun = สตั๊น
-30,Diaochan,Mid,Magic Damage,All,4,1,2,0,B,Slow/Stun/Wave,Yue/Natalya/Liliana,Wave = เคลียร์เวฟ
-31,Dirak,Mid,Magic Damage,All,4,2,2,0,A,Barrier/Range/Slow/Stun/Wave,,Soul_Scroll = ตัดเลือด
-32,Dolia,Support,Magic Damage,All,2,2,1,1,S,Dash/Heal/Push,,
-33,Eland'orr,Jungle/Abyssal,Physical Damage,Early/Mid,4,1,1,3,S,Dash/Push,Valhein/Violet/Stuart/Mina/Nakroth/Billow,
-34,Elsu,Mid/Abyssal,Physical Damage,All,4,1,0,1,A,Burst/Dash/Range/Sight,Slim/Stuart/Yue/Iggy/,
-35,Enzo,Support,Physical Damage,All,2,3,3,1,S,Hook/Sight/Speed/Stun,,
-36,Erin,Mid/Abyssal,Magic Damage,All,4,1,0,1,B,Dash/Slow,Yue/Elsu/Valhein,
-37,Errol,Jungle/DarkSlayer,Physical Damage,All,3,1,1,2,B,Blood/CCResist/Dash/Disable/Speed/Stun,,
-38,Fennik,Jungle/Abyssal,Physical Damage,Early/Mid,4,1,0,2,A,Burst/Dash/Disable/Sight/Wave,Valhein/Violet/Stuart/Eland'orr/Nakroth/Billow/Hayate,
-39,Florentino,DarkSlayer,Physical Damage,All,4,2,1,2,S,CCResist/Dash/Stun,Soul_Scroll/Qi/Airi/Marja/Murad/Ryoma,
-40,Gildur,Support,Magic Damage,All,3,2,3,1,B,Dash/Range/Stun,,
-41,Grakk,Support,Magic Damage,All,2,3,3,0,S,Hook/Silent/Stun,,
-42,Goverra,Mid,Magic Damage,Early/Mid,4,1,1,0,A,Burst/Wave,Yue/Heino,
-43,Hayate,Abyssal/DarkSlayer,True Damage,All,4,1,0,1,S,Dash/Sight,Capheny/Valhein/Stuart/Violet,
-44,Heino,Mid/DarkSlayer,Magic Damage,All,4,2,0,1,A,CCResist/Dash/Range,Yue,
-45,Helen,Support,Magic Damage,Mid/Late,1,2,1,0,A,Heal/Shield/Stun,Yue,
-46,Iggy,Mid,Magic Damage,All,4,1,1,0,A,Burst/Push/Range/Speed/Sight/Wave,Tulen/Liliana/Krizzix,
-47,Ignis,Mid,Magic Damage,All,4,2,2,0,S,Shield/Speed/Stun/Wave,Yue/Raz/Zata,
-48,Ilumia,Mid,Magic Damage,All,4,1,3,0,A,Burst/Push/Range/Speed/Stun/Wave,Yue,
-49,Ishar,Mid,Magic Damage,Early,3,1,1,0,B,Lock/Shield/Speed/Stun,Yue,
-50,Jinnar,Mid,Magic Damage,All,3,2,0,1,B,Speed,Yue,
-51,Kahlii,Mid,Magic Damage,Mid/Late,4,1,0,0,B,Range/Shield/Wave,Yue,
-52,Kaine,Jungle/DarkSlayer,Physical Damage,Early/Mid,4,1,1,1,B,Burst/Dash/Invisible/Stun,Sight,
-53,Keera,Jungle,Magic Damage,All,4,1,1,2,S,Burst/Dash/Disable/Speed,Yena/Eland'orr/Billow/Nakroth,
-54,Kil'Groth,DarkSlayer,Physical Damage,Late,5,1,0,1,B,Blood/CCResist/Dash,Soul_Scroll,
-55,Kriknak,Jungle,Physical Damage,Early/Mid,4,1,0,2,A,Dash/Speed,,
-56,Krixi,Mid,Magic Damage,All,5,1,1,0,A,Burst/Speed/Stun/Wave,Yue,
-57,Krizzix,Support,Magic Damage,All,3,2,3,1,S,Invisible/Hook/Sight/Slow/Speed,Sight,
-58,Lauriel,Mid/DarkSlayer,Magic Damage,Early/Mid,4,1,0,1,A,Dash/Disable,Yue,
-59,Laville,Abyssal,Physical Damage,Mid/Late,4,1,1,0,A,CCResist/Range/Shield/Speed/Stun,Valhein/Violet/Stuart/Fennik,
-60,Liliana,Mid,Magic Damage,All,4,1,1,2,S,Burst/CCResist/Dash/Range/Stun,Raz/Yue/Krixi,
-61,Lindis,Jungle/Abyssal,Physical Damage,Mid/Late,4,1,0,0,B,Burst/Dash/Sight,Valhein/Violet/Stuart,
-62,Lorion,Mid,Magic Damage,All,3,2,1,2,A,Blood/Dash/Stun/Wave,Soul_Scroll/Yue,
-63,Lu_Bu,Jungle/DarkSlayer,Physical Damage,All,3,2,1,2,A,Blood/Dash/Stun,Soul_Scroll,
-64,Lumburr,Support,Physical Damage,All,2,3,3,1,A,CCResist/Dash/Push/Slow/Stun,,
-65,Maloch,Mid/DarkSlayer/Support,True Damage,Mid/Late,5,3,1,1,S,Blood/Burst/Range/Shield/Slow/Stun/Wave,Soul_Scroll,
-66,Marja,Jungle/DarkSlayer,Magic Damage,All,5,2,0,3,S,Blood/Burst/Dash/Disable/Steal,Soul_Scroll/Qi/Murad/Ryoma/Eland'orr/Bolt_Baron/Keera,
-67,Max,DarkSlayer,Physical Damage,All,3,3,1,1,B,Range/Sight/Stun,,
-68,Mganga,Mid,Magic Damage,All,4,2,0,0,B,Blood/Burn/Burst/Slow,Diaochan/Zata/Yue,
-69,Mina,DarkSlayer/Support,Physical Damage,All,3,3,3,0,A,Blood/Hook/Stun,Soul_Scroll,
-70,Ming,Support,Magic Damage,All,3,1,0,0,S,Buff/Debuff/Heal,,
-71,Moren,Abyssal,Physical Damage,Late,3,1,0,0,B,Push/Stun,Valhein/Violet/Stuart,
-72,Murad,Jungle/Mid/DarkSlayer,Physical Damage,All,4,1,1,2,S,Burst/Dash/Disable/Stun/Wave,Omen/Qi/Ryoma,
-73,Nakroth,Jungle,Physical Damage,All,4,1,1,3,A,Burst/CCResist/Dash/HardStun/Stun,Billow/Aoi/Keera,
-74,Natalya,Mid,Magic Damage,Early/Mid,4,1,2,0,B,Burst/CCResist/Slow/Stun/Wave,Yue/Tulen/Liliana,
-75,Omega,Support,Physical Damage,All,3,3,3,1,B,HardStun/Shield/Speed/Stun,,
-76,Omen,DarkSlayer,True Damage,All,3,3,2,1,A,Lock/Speed,,
-77,Ormarr,Support,Physical Damage,All,3,2,2,1,B,Dash/Stun,,
-78,Paine,Jungle,Magic Damage,All,4,1,1,1,B,Burst/Dash/Range/Silent,,
-79,Preyta,Mid,Magic Damage,All,4,1,1,0,B,Burst/Push/Shield/Wave,Yue,
-80,Qi,DarkSlayer,Physical Damage,All,4,1,3,2,S,Blood/Burst/Dash/Push/Stun,Soul_Scroll/Omen/Roxie/Skud,
-81,Quillen,Jungle,Physical Damage,Early/Mid,4,1,0,1,B,Burst/Dash/Invisible/Speed,Sight,
-82,Raz,Mid,Magic Damage,All,4,1,2,2,S,Burst/Dash/Push/Slow/Stun,Lorion/Tulen/Ilumia/,
-83,Riktor,DarkSlayer/Support,True Damage,All,4,3,1,2,A,Dash/Immortal/Stun/Wave,Omen/Qi/Ryoma,
-84,Rouie,Mid,Magic Damage,All,3,1,2,0,S,Heal/Push/Silent/Wave,Raz/Ignis/Y'bneth,
-85,Rourke,Jungle,Physical Damage,Late,5,1,1,0,B,Burst/CCResist/Shield/Speed,,
-86,Roxie,DarkSlayer/Support,Magic Damage,All,3,3,2,0,A,Blood/HardLock/Shield/Speed,Florentino/Superman/Ryoma/Soul_Scroll,
-87,Ryoma,Jungle/DarkSlayer,Physical Damage,Early/Mid,4,1,2,1,A,Blood/Burst/Dash/Stun,Omen/Qi/Skud,
-88,Sephera,Jungle/Mid,Magic Damage,Mid/Late,4,1,2,0,A,Heal/Disable/Slow/Stun,Yue,
-89,Sinestrea,Jungle,Physical Damage,All,4,1,1,1,B,Blood/Dash/Immortal/Invisible,Soul_Scroll/Sight,
-90,Skud,DarkSlayer,Magic Damage,All,4,4,1,1,A,Burst/Dash/Stun,Florentino/Omen/Veres,
-91,Slimz,Abyssal,Physical Damage,Mid/Late,4,1,1,1,A,Dash/Speed/Stun,Valhein/Violet/Stuart/Fennik,
-92,Stuart,Abyssal,Physical Damage,Early/Mid,3,1,1,1,S,Burst/Immortal/Speed/Stun,Skud/Iggy/Violet/Hayate/Elsu,
-93,Superman,DarkSlayer/Support,Physical Damage,All,3,2,3,2,B,Dash/Push/Speed,,
-94,Taara,Jungle/DarkSlayer,Physical Damage,All,3,3,0,1,B,Blood/Dash,Soul_Scroll,
-95,Tachi,Jungle/DarkSlayer,True Damage,All,4,2,0,2,S,Blood/Burst/CCResist/Dash/Speed/Wave,,
-96,TeeMee,Support,Magic Damage,All,3,2,3,2,S,Dash/Speed/Stun,,
-97,Teeri,Abyssal,Physical Damage,All,4,1,0,0,A,Range/Sight/Wave,Elsu/Stuart/Capheny/Violet,
-98,Tel'Annas,Abyssal,Physical Damage,All,4,1,1,0,A,Burst/Range/Speed/Stun/Wave,Elsu/Stuart/Violet,
-99,Thane,Support,Physical Damage,All,3,3,3,2,A,CCResist/Dash/Hook,,
-100,The_Flash,Mid,Magic Damage,All,4,1,1,1,B,Burst/Dash/Disable/Hook,,
-101,Thorne,Abyssal,Physical Damage,Mid/Late,4,1,1,1,B,Dash/Range/Wave,Valhein/Violet/Stuart,
-102,Toro,Support,Physical Damage,All,3,4,2,3,A,CCResist/Dash/Stun,,
-103,Tulen,Jungle/Mid,Magic Damage,All,5,1,0,1,A,Burst/Dash/Range,Mganga/Liliana/Eland'orr/Bolt_Baron/Paine,
-104,Valhein,Abyssal,Physical Damage,Early/Mid,4,1,1,0,S,Burst/Speed/Stun,Stuart/Aoi/Murad/Fennik/Ignis/,
-105,Veera,Mid,Magic Damage,Early/Mid,4,1,1,0,B,Burst/Speed/Stun,Yue,
-106,Veres,Jungle/DarkSlayer/Support,Physical Damage,All,3,2,2,1,B,Blood/Burst/Dash/Hook/Push/Stun,Soul_Scroll,
-107,Violet,Abyssal,Physical Damage,Mid/Late,4,1,0,1,A,Burst/Dash/Range,Valhein/Stuart/Tel'annas,
-108,Volkath,Jungle/DarkSlayer,Physical Damage,Early/Mid,5,1,1,1,B,Burst/Dash/Immortal/Speed/Stun,Soul_Scroll,
-109,Wiro,DarkSlayer/Support,Physical Damage,All,3,3,2,1,B,Dash/Range/Stun,,
-110,Wisp,Abyssal,Physical Damage,All,4,1,1,1,A,Dash/Range/Stun/Wave,Valhein/Stuart,
-111,Wonder_Woman,Jungle,Physical Damage,Early/Mid,4,2,2,1,B,Burst/Dash/Hook/Push/Shield/Stun/Wave,Bolt_Baron/Eland'orr/Keera,
-112,Wukong,Jungle/DarkSlayer,Physical Damage,Late,4,1,1,2,B,Burst/Dash/Invisible/Speed/Stun,Sight,
-113,Xeniel,DarkSlayer/Support,Magic Damage,All,3,3,1,1,A,Heal/Shield/Stun,,
-114,Y'bneth,Support,Physical Damage,All,3,3,3,1,A,Blood/CCResist/Dash/Hook/Push/Stun,Soul_Scroll,
-115,Yan,Jungle/DarkSlayer,Physical Damage,Mid/Late,4,2,1,3,A,Blood/CCResist/Dash/Stun,Soul_Scroll,
-116,Yena,DarkSlayer,Physical Damage,All,4,2,2,2,S,Burst/CCResist/Dash/Debuff/Silent/Wave,Florentino/Lu_Bu/Qi,
-117,Yorn,Abyssal,Physical Damage,Late,5,1,1,0,B,Burst/Push/Range,Elsu/Stuart,
-118,Yue,Mid,Magic Damage,All,5,1,1,1,S,Burst/Dash/Range,Tulen/Iggy/Zata,
-119,Zanis,Jungle/DarkSlayer/Support,True Damage,Late,3,3,0,1,B,Burn/Burst/Speed,,
-120,Zata,Mid,Magic Damage,Early/Mid,4,1,0,1,A,Burst/Dash/Disable,,
-121,Zephys,Jungle,Physical Damage,All,4,3,1,1,A,Dash/Stun,,
-122,Zill,Jungle,Magic Damage,All,4,1,0,2,A,Dash/Disable,,
-123,Zip,Support,Magic Damage,All,1,3,2,1,A,Dash/Shield/Speed/Stun,,
-124,Zuka,Jungle/DarkSlayer,Physical Damage,All,4,1,2,3,A,Burst/Dash/Stun,,
+﻿,Hero,Role,Lane,Damage Type,Time,Damage,Dulability,CC,Mobility,Tier,Ability,Weakness,หมายเหตุ
+1,Airi,Fighter/Assasin,DarkSlayer,True Damage,Mid/Late,5,1,2,2,A,Blood/CCResist/Dash/Shield/Stun,Soul_Scroll/,Damage เต็ม 5
+2,Aleister,Mage,Mid,Magic Damage,All,3,1,2,0,B,HardLock/Stun/Wave,Yue/Assasin,Dulability เต็ม 4
+3,Alice,Support,Mid/Support,Magic Damage,Late,4,1,3,1,A,Burst/Shield/Slow/Speed/Stun/Wave,Yue/Assasin,CC เต็ม 3
+4,Allain,Fighter,DarkSlayer,Physical Damage,Late,3,2,0,1,B,Blood/CCResist/Dash/Immortal,Soul_Scroll/Florentino,Mobility เต็ม 3
+5,Amily,Fighter,DarkSlayer,Physical Damage,All,3,2,1,0,B,CCResist/Stun,Florentino,Barrier = สร้างโล่ป้องกัน
+6,Annette,Support/Mage,Mid/Support,Magic Damage,Mid/Late,3,1,1,1,S,Dash/Disable/Push/Shield/Wave,Yue,Blood = เด้งเลือด
+7,Aoi,Assasin,Jungle,Physical Damage,Early/Mid,5,2,1,3,A,Burst/Dash/Disable/Shield,Billow/Keera/Eland'orr,Buff = บัพเพื่อน
+8,Arduin,Fighter/Tank,Support,Physical Damage,All,3,3,2,2,A,Dash/Shield/Stun,Florentino,Burn = เผา
+9,Arthur,Fighter/Tank,DarkSlayer,Physical Damage,All,3,4,1,2,B,Blood/Speed/Stun,Florentino,Burst = เบิร์ส
+10,Arum,Tank/Support,Support,Magic Damage,All,3,4,2,0,B,Blood/HardLock/Speed,,CCResist = ต้านCC
+11,Astrid,Fighter/Assasin,Jungle/DarkSlayer,Physical Damage,All,3,2,1,1,B,Dash/Immortal,Florentino,Dash = ข้ามกำแพง
+12,Ata,Tank/Fighter,DarkSlayer/Support,Physical Damage,All,3,3,2,2,A,Blood/Dash/Lock/Stun,Florentino,Debuff = ดีบัพศัตรู
+13,Aya,Support,Mid/Support,Magic Damage,Late,3,1,1,0,B,Dash/Disable/Silent/Slow/Sight/Wave,Assasin,Disable = ไม่ตกเป็นเป้า
+15,Azzen'Ka,Mage,Mid,Magic Damage,All,4,1,3,0,B,Burst/Push/Stun/Wave,Yue/Assasin,HardLock = ล็อคล้างไม่ได้
+16,Baldum,Tank/Support,Support,Physical Damage,All,2,3,2,1,B,HardLock/Charge/Speed,Florentino,HardStun = สตั๊นป้อม
+18,Bijan,Fighter,Jungle/DarkSlayer,Physical Damage,All,4,1,2,2,A,Burst/CCResist/Speed/Stun,Ata,Heal = ฮีลเพื่อน
+17,Billow,Assasin/Fighter,Jungle/DarkSlayer,Physical Damage,Early/Mid,5,2,1,3,S,Blood/Burst/Dash/Charge/Shield,Soul_Scroll/Eland'orr/Fennik/Wonder_Woman,Hook = ดึงศัตรูเข้ามาหาตน
+14,Biron,Fighter/Tank,DarkSlayer,Physical Damage,All,4,1,1,1,A,Burst/Dash/Shield/Stun,Florentino,Immortal = อมตะ
+19,Bolt_Baron,Mage/Fighter,Jungle/DarkSlayer,Magic Damage,Late,4,2,1,2,A,Blood/CCResist/Dash/Push/Shield,Soul_Scroll/Florentino/Qi/Murad/Eland'orr/Billow/Keera,Invisible = ล่องหน
+20,Bonnie,Mage,Mid,Magic Damage,All,3,1,2,0,B,Lock/Hook/Sight/Slow/Stun/Wave,Yue/Assasin,Lock = จำกัดการเคลื่อนที่
+21,Bright,Assasin,Jungle/Abyssal,True Damage,Late,5,1,1,1,B,Dash/Immortal/Sight/Stun,Arum/Aleister,Push = ผลักศัตรูออกไปจากตน
+22,Butterfly,Assasin/Fighter,Jungle,Physical Damage,Early/Mid,5,2,0,1,A,Blood/Burst/Dash/Shield/Speed,Soul_Scroll,Range = ระยะไกล
+23,Celica,Carry,Abyssal,Physical Damage,All,4,1,0,1,B,Range/Sight/Speed,Elsu/Valhein/Stuart/Assasin,Shield = เด้งโล่
+24,Capheny,Carry,Abyssal,Physical Damage,All,4,2,0,1,S,Burst/Dash/Range/Speed/Wave,Valhein/Violet/Stuart/Tel'Annas,Sight = เปิดแมพ
+25,Charlotte,Fighter,DarkSlayer,Physical Damage,All,3,3,1,2,B,Blood/CCResist/Dash/Speed/Stun,Soul_Scroll/Florentino,Silent = ใบ้
+26,Chaugnar,Tank/Support,Support,Magic Damage,All,1,2,0,0,B,CCResist,Florentino,Slow = สโลว์
+27,Cresht,Tank/Support,Support,Physical Damage,All,2,4,2,1,B,CCResist/Push/Shield/Stun,Florentino,Speed = เพิ่มความเร็วการเคลื่อนที่
+28,D'Arcy,Mage,Jungle/Mid,Magic Damage,Mid/Late,4,1,1,1,B,Burst/Dash/Disable/Hook/Speed/Wave,Assasin,Steal = ขโมยพลังโจมตี
+29,Dextra,Fighter/Tank,Jungle/DarkSlayer,Physical Damage,Late,3,1,0,0,B,Blood/Hook/Speed/Steal,Soul_Scroll/Florentino,Stun = สตั๊น
+30,Diaochan,Mage,Mid,Magic Damage,All,4,1,2,0,B,Slow/Stun/Wave,Yue/Natalya/Liliana/Assasin,Wave = เคลียร์เวฟ
+31,Dirak,Mage,Mid,Magic Damage,All,4,2,2,0,A,Barrier/Range/Slow/Stun/Wave,Assasin,Soul_Scroll = ตัดเลือด
+32,Dolia,Support,Support,Magic Damage,All,2,2,1,1,A,Dash/Heal/Push,Florentino/Assasin,Charge = ไถ
+33,Eland'orr,Carry,Jungle/Abyssal,Physical Damage,Early/Mid,4,1,1,3,S,Dash/Push,Valhein/Violet/Stuart/Mina/Nakroth/Billow,
+34,Elsu,Carry,Mid/Abyssal,Physical Damage,All,4,1,0,1,S,Burst/Dash/Range/Sight,Slim/Stuart/Yue/Iggy/,
+35,Enzo,Assasin,Support,Physical Damage,All,2,3,3,1,S,Hook/Sight/Speed/Stun,,
+36,Erin,Carry,Mid/Abyssal,Magic Damage,All,4,1,0,1,B,Dash/Slow,Yue/Elsu/Valhein/Assasin,
+37,Errol,Fighter,Jungle/DarkSlayer,Physical Damage,All,3,1,1,2,A,Blood/CCResist/Dash/Disable/Speed/Stun,Florentino,
+38,Fennik,Carry,Jungle/Abyssal,Physical Damage,Early/Mid,4,1,0,2,A,Burst/Dash/Disable/Sight/Wave,Valhein/Violet/Stuart/Eland'orr/Nakroth/Billow/Hayate,
+39,Florentino,Fighter,DarkSlayer,Physical Damage,All,4,2,1,2,S,CCResist/Dash/Stun,Soul_Scroll/Qi/Airi/Marja/Murad/Ryoma,
+40,Gildur,Tank/Support,Support,Magic Damage,All,3,2,3,1,B,Dash/Range/Stun,Florentino,
+41,Grakk,Tank/Support,Support,Magic Damage,All,2,3,3,0,S,Hook/Silent/Stun,Florentino,
+42,Goverra,Mage,Mid,Magic Damage,Early/Mid,4,1,1,0,S,Burst/Wave,Yue/Heino/Assasin/Ignis,
+43,Hayate,Carry,Abyssal/DarkSlayer,True Damage,All,4,1,0,1,S,Dash/Sight,Capheny/Valhein/Stuart/Violet,
+44,Heino,Mage/Fighter,Mid/DarkSlayer,Magic Damage,All,4,2,0,1,S,CCResist/Dash/Range,Yue,
+45,Helen,Support,Support,Magic Damage,Mid/Late,1,2,1,0,A,Heal/Shield/Stun,Yue/Soul_Scroll,
+46,Iggy,Mage,Mid,Magic Damage,All,4,1,1,0,A,Burst/Push/Range/Speed/Sight/Wave,Tulen/Liliana/Krizzix/Assasin,
+47,Ignis,Mage,Mid,Magic Damage,All,4,2,2,0,S,Shield/Speed/Stun/Wave,Yue/Raz/Zata,
+48,Ilumia,Mage,Mid,Magic Damage,All,4,1,3,0,A,Burst/Push/Range/Speed/Stun/Wave,Yue/Assasin,
+49,Ishar,Mage,Mid,Magic Damage,Early,3,1,1,0,B,Lock/Shield/Speed/Stun,Yue/Assasin,
+50,Jinnar,Mage,Mid,Magic Damage,All,3,2,0,1,B,Speed,Yue,
+51,Kahlii,Mage,Mid,Magic Damage,Mid/Late,4,1,0,0,B,Range/Shield/Wave,Yue/Assasin,
+52,Kaine,Assasin,Jungle/DarkSlayer,Physical Damage,Early/Mid,4,1,1,1,B,Burst/Dash/Invisible/Stun,Sight,
+53,Keera,Assasin,Jungle,Magic Damage,All,4,1,1,2,S,Burst/Dash/Disable/Speed,Yena/Eland'orr/Billow/Nakroth,
+54,Kil'Groth,Fighter,DarkSlayer,Physical Damage,Late,5,1,0,1,A,Blood/CCResist/Dash,Soul_Scroll/Florentino,
+55,Kriknak,Assasin,Jungle,Physical Damage,Early/Mid,4,1,0,2,A,Dash/Speed,,
+56,Krixi,Mage,Mid,Magic Damage,All,5,1,1,0,A,Burst/Speed/Stun/Wave,Yue/Assasin,
+57,Krizzix,Support,Support,Magic Damage,All,3,2,3,1,S,Invisible/Hook/Sight/Slow/Speed,Sight,
+58,Lauriel,Mage,Mid/DarkSlayer,Magic Damage,Early/Mid,4,1,0,1,A,Dash/Disable,Yue,
+59,Laville,Carry,Abyssal,Physical Damage,Mid/Late,4,1,1,0,A,CCResist/Range/Shield/Speed/Stun,Valhein/Violet/Stuart/Fennik,
+60,Liliana,Mage/Assasin,Mid,Magic Damage,All,4,1,1,2,S,Burst/CCResist/Dash/Range/Stun,Raz/Yue/Krixi,
+61,Lindis,Carry,Jungle/Abyssal,Physical Damage,Mid/Late,4,1,0,0,B,Burst/Dash/Sight,Valhein/Violet/Stuart/Assasin,
+62,Lorion,Mage,Mid,Magic Damage,All,3,2,1,2,S,Blood/Dash/Stun/Wave,Soul_Scroll/Yue,
+63,Lu_Bu,Fighter,Jungle/DarkSlayer,Physical Damage,All,3,2,1,2,B,Blood/Dash/Stun,Soul_Scroll/Florentino,
+64,Lumburr,Tank/Support,Support,Physical Damage,All,2,3,3,1,B,CCResist/Dash/Push/Slow/Stun,Florentino,
+65,Maloch,Fighter/Tank,Mid/DarkSlayer/Support,True Damage,Mid/Late,5,3,1,1,A,Blood/Burst/Range/Shield/Slow/Stun/Wave,Soul_Scroll/Florentino,
+66,Marja,Mage,Jungle/DarkSlayer,Magic Damage,All,5,2,0,3,S,Blood/Burst/Dash/Disable/Steal,Soul_Scroll/Qi/Murad/Ryoma/Eland'orr/Bolt_Baron/Keera,
+67,Max,Tank,DarkSlayer,Physical Damage,All,3,3,1,1,B,Range/Sight/Stun,Florentino,
+68,Mganga,Mage,Mid,Magic Damage,All,4,2,0,0,A,Blood/Burn/Burst/Slow,Diaochan/Zata/Yue/Assasin,
+69,Mina,Tank,DarkSlayer/Support,Physical Damage,All,3,3,3,0,B,Blood/Hook/Stun,Soul_Scroll/Florentino,
+70,Ming,Support,Support,Magic Damage,All,3,1,0,0,A,Buff/Debuff/Heal,Florentino/Assasin,
+71,Moren,Carry,Abyssal,Physical Damage,Late,3,1,0,0,B,Push/Stun,Valhein/Violet/Stuart/Assasin,
+72,Murad,Assasin,Jungle/Mid/DarkSlayer,Physical Damage,All,4,1,1,2,A,Burst/Dash/Disable/Stun/Wave,Omen/Qi/Ryoma,
+73,Nakroth,Assasin,Jungle,Physical Damage,All,4,1,1,3,A,Burst/CCResist/Dash/HardStun/Stun,Billow/Aoi/Keera,
+74,Natalya,Mage,Mid,Magic Damage,Early/Mid,4,1,2,0,A,Burst/CCResist/Slow/Stun/Wave,Yue/Tulen/Liliana/Assasin,
+75,Omega,Tank/Support,Support,Physical Damage,All,3,3,3,1,A,HardStun/Shield/Speed/Stun,Florentino,
+76,Omen,Fighter,DarkSlayer,True Damage,All,3,3,2,1,A,Hook/Lock/Speed,Florentino,
+77,Ormarr,Tank,Support,Physical Damage,All,3,2,2,1,B,Dash/Stun,Florentino,
+78,Paine,Assasin,Jungle,Magic Damage,All,4,1,1,1,A,Burst/Dash/Range/Silent,,
+79,Preyta,Mage,Mid,Magic Damage,All,4,1,1,0,A,Burst/Push/Shield/Wave,Yue/Assasin,
+80,Qi,Fighter/Assasin,DarkSlayer,Physical Damage,All,4,1,3,2,S,Blood/Burst/Dash/Push/Stun,Soul_Scroll/Omen/Roxie/Skud,
+81,Quillen,Assasin,Jungle,Physical Damage,Early/Mid,4,1,0,1,B,Burst/Dash/Invisible/Speed,Sight,
+82,Raz,Mage/Assasin,Mid,Magic Damage,All,4,1,2,2,A,Burst/Dash/Push/Slow/Stun,Lorion/Tulen/Ilumia/,
+83,Riktor,Fighter,DarkSlayer/Support,True Damage,All,4,3,1,2,A,Dash/Immortal/Stun/Wave,Omen/Qi/Ryoma,
+84,Rouie,Support,Mid,Magic Damage,All,3,1,2,0,S,Heal/Push/Silent/Wave,Raz/Ignis/Y'bneth/Assasin,
+85,Rourke,Fighter,Jungle,Physical Damage,Late,5,1,1,0,B,Burst/CCResist/Shield/Speed,Florentino,
+86,Roxie,Tank/Fighter,DarkSlayer/Support,Magic Damage,All,3,3,2,0,A,Blood/HardLock/Shield/Speed,Florentino/Superman/Ryoma/Soul_Scroll,
+87,Ryoma,Fighter/Assasin,Jungle/DarkSlayer,Physical Damage,Early/Mid,4,1,2,1,S,Blood/Burst/Dash/Stun,Omen/Qi/Skud,
+88,Sephera,Mage/Support,Jungle/Mid,Magic Damage,Mid/Late,4,1,2,0,B,Heal/Disable/Slow/Stun,Yue/Assasin,
+89,Sinestrea,Assasin,Jungle,Physical Damage,All,4,1,1,1,S,Blood/Dash/Lock/Invisible,Soul_Scroll/Sight,
+90,Skud,Fighter/Tank,DarkSlayer,Magic Damage,All,4,4,1,1,A,Burst/Dash/Stun,Florentino/Omen/Veres,
+91,Slimz,Carry,Abyssal,Physical Damage,Mid/Late,4,1,1,1,B,Dash/Speed/Stun,Valhein/Violet/Stuart/Fennik/Assasin,
+92,Stuart,Carry,Abyssal,Physical Damage,Early/Mid,3,1,1,1,A,Burst/Immortal/Speed/Stun,Skud/Iggy/Violet/Hayate/Elsu,
+93,Superman,Fighter,DarkSlayer/Support,Physical Damage,All,3,2,3,2,B,Dash/Push/Charge/Speed,Florentino,
+94,Taara,Tank/Fighter,Jungle/DarkSlayer,Physical Damage,All,3,3,0,1,B,Blood/Dash,Soul_Scroll/Florentino,
+95,Tachi,Fighter,Jungle/DarkSlayer,True Damage,All,4,2,0,2,A,Blood/Burst/CCResist/Dash/Speed/Wave,Soul_Scroll/Florentino,
+96,TeeMee,Tank/Support,Support,Magic Damage,All,3,2,3,2,S,Dash/Speed/Stun,Faorentcno,
+97,Teeri,Carry,Abyssal,Physical Damage,All,4,1,0,0,A,Range/Sight/Wave,Elsu/Stuart/Capheny/Violet/Assasin,
+98,Tel'Annas,Carry,Abyssal,Physical Damage,All,4,1,1,0,A,Burst/Range/Speed/Stun/Wave,Elsu/Stuart/Violet/Assasin,
+99,Thane,Tank,Support,Physical Damage,All,3,3,3,2,A,CCResist/Dash/Charge,Elsu/Stuart/Tapheny/Violet/Assasin,
+100,The_Flash,Assasin,Mid,Magic Damage,All,4,1,1,1,B,Burst/Dash/Disable/Hook,Assasin,
+101,Thorne,Carry,Abyssal,Physical Damage,Mid/Late,4,1,1,1,A,Dash/Range/Wave,Valhein/Violet/Stuart/Assasin,
+102,Toro,Tank/Support,Support,Physical Damage,All,3,4,2,3,S,CCResist/Dash/Stun,Florentino,
+103,Tulen,Mage,Jungle/Mid,Magic Damage,All,5,1,0,1,A,Burst/Dash/Range,Mganga/Liliana/Eland'orr/Bolt_Baron/Paine,
+104,Valhein,Carry,Abyssal,Physical Damage,Early/Mid,4,1,1,0,S,Burst/Speed/Stun,Stuart/Aoi/Murad/Fennik/Ignis/,
+105,Veera,Mage,Mid,Magic Damage,Early/Mid,4,1,1,0,B,Burst/Speed/Stun,Yue/Assasin,
+106,Veres,Fighter,Jungle/DarkSlayer/Support,Physical Damage,All,3,2,2,1,B,Blood/Burst/Dash/Hook/Push/Stun,Soul_Scroll/Florentino,
+107,Violet,Carry,Abyssal,Physical Damage,Mid/Late,4,1,0,1,A,Burst/Dash/Range,Valhein/Stuart/Tel'annas/Assasin,
+108,Volkath,Fighter/Assasin,Jungle/DarkSlayer,Physical Damage,Early/Mid,5,1,1,1,S,Burst/Dash/Immortal/Speed/Stun,Soul_Scroll,
+109,Wiro,Tank/Fighter,DarkSlayer/Support,Physical Damage,All,3,3,2,1,B,Dash/Range/Stun,Soul_Scroll/Florentino,
+110,Wisp,Carry,Abyssal,Physical Damage,All,4,1,1,1,S,Dash/Range/Stun/Wave,Valhein/Stuart/Assasin,
+111,Wonder_Woman,Fighter,Jungle,Physical Damage,Early/Mid,4,2,2,1,A,Burst/Dash/Hook/Shield/Stun/Wave,Bolt_Baron/Eland'orr/Keera,
+112,Wukong,Assasin,Jungle/DarkSlayer,Physical Damage,Late,4,1,1,2,B,Burst/Dash/Invisible/Speed/Stun,Sight,
+113,Xeniel,Tank/Support,DarkSlayer/Support,Magic Damage,All,3,3,1,1,B,Heal/Shield/Stun,Soul_Scroll/Florentino,
+114,Y'bneth,Tank,Support,Physical Damage,All,3,3,3,1,A,Blood/CCResist/Dash/Charge/Push/Stun,Soul_Scroll/Florentino,
+115,Yan,Fighter/Assasin,Jungle/DarkSlayer,Physical Damage,Mid/Late,4,2,1,3,A,Blood/CCResist/Dash/Stun,Soul_Scroll,
+116,Yena,Fighter,DarkSlayer,Physical Damage,All,4,2,2,2,S,Burst/CCResist/Dash/Debuff/Silent/Wave,Florentino/Lu_Bu/Qi,
+117,Yorn,Carry,Abyssal,Physical Damage,Late,5,1,1,0,A,Burst/Push/Range,Elsu/Stuart/Assasin,
+118,Yue,Mage,Mid,Magic Damage,All,5,1,1,1,A,Burst/Dash/Range,Tulen/Iggy/Zata/Assasin,
+119,Zanis,Fighter,Jungle/DarkSlayer/Support,True Damage,Late,3,3,0,1,B,Burn/Burst/Speed,Florentino,
+120,Zata,Mage/Assasin,Mid,Magic Damage,Early/Mid,4,1,0,1,B,Burst/Dash/Disable,Ilumia/Assasin/Krizzix,
+121,Zephys,Fighter/Assasin,Jungle,Physical Damage,All,4,3,1,1,S,Dash/Stun,,
+122,Zill,Assasin,Jungle,Magic Damage,All,4,1,0,2,A,Dash/Disable,,
+123,Zip,Support,Support,Magic Damage,All,1,3,2,1,A,Dash/Shield/Speed/Stun,,
+124,Zuka,Fighter/Assasin,Jungle/DarkSlayer,Physical Damage,All,4,1,2,3,A,Burst/Dash/Stun,Soul_Scroll/Florentino,
