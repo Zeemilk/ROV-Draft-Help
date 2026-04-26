@@ -91,11 +91,7 @@ class DraftHelper {
         // Recalculate hero sizes based on screen size
         this.adjustHeroSizes();
         
-        // Update gallery layout if needed
-        const gallery = document.querySelector("#hero-gallery");
-        if (gallery) {
-            this.updateGalleryLayout(gallery);
-        }
+        // hero gallery removed; nothing to update here
     }
 
     /**
@@ -271,12 +267,8 @@ class DraftHelper {
         const gameWrapper = document.querySelector(`.game[data-index="${index}"]`);
         if (!gameWrapper) return;
 
-        const gallery = gameWrapper.querySelector("#hero-gallery");
+        const gallery = null; // hero gallery removed; selection is via popups
         const chooseBoxes = gameWrapper.querySelectorAll(".hero-choose");
-        const filterButtons = gameWrapper.querySelectorAll('#lane-filter input[type="checkbox"]');
-        const searchInput = gameWrapper.querySelector(`#hero-search-${index}`);
-        const quickTeam1Btn = gameWrapper.querySelector(".quick-team-btn.team1");
-        const quickTeam2Btn = gameWrapper.querySelector(".quick-team-btn.team2");
         
         const gameState = {
             selectedLanes: new Set(),
@@ -287,50 +279,17 @@ class DraftHelper {
 
         this.gameStates.set(index, gameState);
 
-        // Quick team select (one-click pick)
-        const setActive = (team) => {
-            this.activeQuickTeam = team;
-            quickTeam1Btn?.classList.toggle("active", team === "team1");
-            quickTeam2Btn?.classList.toggle("active", team === "team2");
-        };
-        quickTeam1Btn?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setActive("team1");
-        });
-        quickTeam2Btn?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setActive("team2");
-        });
-        setActive(this.activeQuickTeam);
-
         // Hero selection boxes
         chooseBoxes.forEach(box => {
             this.bindHeroBoxEvents(box, gallery, gameState);
         });
-
-        // Filter buttons
-        filterButtons.forEach(button => {
-            this.bindFilterButtonEvents(button, gallery, gameState);
-        });
-
-        // Search input
-        if (searchInput) {
-            this.bindSearchEvents(searchInput, gallery, gameState);
-        }
-
-        // Mobile filter menu
-        this.bindMobileMenuEvents(gameWrapper, gallery, gameState);
-
-        // Mobile quick buttons
-        this.addMobileQuickButtons(gameWrapper, index);
         
         // Add click event to hide popup when clicking outside
         gameWrapper.addEventListener('click', (e) => {
             // ถ้าคลิกที่พื้นที่ว่าง (ไม่ใช่ hero หรือ popup)
             if (!e.target.closest('.hero-wrapper') && 
                 !e.target.closest('.team-selection-popup') && 
+                !e.target.closest('.hero-picker-popup') &&
                 !e.target.closest('.hero-choose') &&
                 this.selectedHero) {
                 // ยกเลิกการเลือกฮีโร่
@@ -360,15 +319,23 @@ class DraftHelper {
             
             if (imgInBox && imgInBox.alt) {
                 const heroName = imgInBox.alt;
-                const isShowingWeakness = gameState.isShowingWeakness.get(boxId) || false;
-                
-                if (!isShowingWeakness) {
-                    this.showHeroWeakness(heroName, imgInBox, gallery, boxId, gameState);
-                } else {
-                    this.hideHeroWeakness(heroName, imgInBox, originalImg, gallery, boxId, gameState);
-                }
+                // Always show counters only.
+                // (Previously: second click removed the hero from the slot.)
+                this.showHeroWeakness(heroName, imgInBox, gallery, boxId, gameState);
             } else if (this.selectedHero && this.selectedElement) {
                 this.selectHeroToBox(imgInBox, boxId, gameState);
+            } else {
+                // Empty slot clicked with no selected hero:
+                // open popup to pick a hero (no lane-based filtering)
+                this.showHeroPickerPopup({
+                    heroes: this.heroDataList,
+                    title: "เลือกฮีโร่",
+                    onPick: (heroName) => {
+                        this.setHeroToBoxById(boxId, heroName, gameState);
+                        this.hideHeroPickerPopup();
+                        this.updateTeam();
+                    }
+                });
             }
             
             this.updateTeam();
@@ -397,31 +364,57 @@ class DraftHelper {
      * Show hero weakness information
      */
     showHeroWeakness(heroName, imgInBox, gallery, boxId, gameState) {
-        imgInBox.style.border = "3px solid red";
+        // No red border highlight (requested)
         gameState.isShowingWeakness.set(boxId, true);
         
         const heroObj = this.heroDataList.find(h => h.Hero === heroName);
         const weaknessList = this.parseWeaknessList(heroObj?.Weakness || "");
         const counterHeroes = this.getCounterHeroes(weaknessList);
-        
-        this.initGallery(counterHeroes, gallery, true);
+
+        // Show counters in popup (hero gallery removed)
+        this.showHeroPickerPopup({
+            heroes: this.sortHeroesByPriority(counterHeroes.filter(h => h?.Hero)),
+            title: `Counter: ${heroName}`,
+            actions: [
+                {
+                    label: "Remove",
+                    className: "danger",
+                    onClick: () => {
+                        this.clearHeroFromBox(boxId, gameState);
+                        this.hideHeroPickerPopup();
+                        this.updateTeam();
+                    }
+                }
+            ],
+            onPick: (picked) => {
+                // Selecting a counter just closes popup (no auto-pick)
+                this.hideHeroPickerPopup();
+            }
+        });
+    }
+
+    clearHeroFromBox(boxId, gameState) {
+        const gameWrapper = document.querySelector(`.game[data-index="${this.currentGameIndex}"]`);
+        const box = gameWrapper?.querySelector(`#${CSS.escape(boxId)}`);
+        const img = box?.querySelector("img");
+        if (!img) return;
+
+        const defaultSrc = img.dataset?.default;
+        if (defaultSrc) img.src = defaultSrc;
+        img.alt = "";
+        img.style.border = "1px solid #000";
+        gameState?.isShowingWeakness?.set?.(boxId, false);
     }
 
     /**
      * Hide hero weakness information
      */
     hideHeroWeakness(heroName, imgInBox, originalImg, gallery, boxId, gameState) {
-        const galleryImg = Array.from(gallery.querySelectorAll("img")).find(img => img.alt === heroName);
-        if (galleryImg) {
-            galleryImg.style.display = "inline-block";
-        }
-        
-        imgInBox.src = originalImg.dataset.default;
-        imgInBox.alt = "";
+        // No-op now: we no longer remove heroes from slots on second click.
+        // Kept for backward-compat, in case other callers still call it.
         imgInBox.style.border = "1px solid #000";
         gameState.isShowingWeakness.set(boxId, false);
-        
-        this.initGallery(this.heroDataList, gallery, true);
+        this.hideHeroPickerPopup();
     }
 
     /**
@@ -438,6 +431,232 @@ class DraftHelper {
         
         // ซ่อน popup เลือกทีมหลังจากเลือกฮีโร่เข้าทีมแล้ว
         this.hideTeamSelectionPopup();
+    }
+
+    setHeroToBoxById(boxId, heroName, gameState) {
+        const gameWrapper = document.querySelector(`.game[data-index="${this.currentGameIndex}"]`);
+        const box = gameWrapper?.querySelector(`#${CSS.escape(boxId)}`);
+        const imgInBox = box?.querySelector("img");
+        if (!imgInBox) return;
+
+        imgInBox.src = `${import.meta.env.BASE_URL}asset/hero/${heroName}.webp`;
+        imgInBox.alt = heroName;
+        gameState?.isShowingWeakness?.set?.(boxId, false);
+    }
+
+    ensureHeroPickerPopup() {
+        let popup = document.querySelector(".hero-picker-popup");
+        if (popup) return popup;
+
+        popup = document.createElement("div");
+        popup.className = "hero-picker-popup";
+        popup.style.display = "none";
+        popup.innerHTML = `
+            <div class="hero-picker-overlay"></div>
+            <div class="hero-picker-content">
+                <div class="hero-picker-header">
+                    <h3>เลือกฮีโร่ (Tier S)</h3>
+                    <div class="hero-picker-actions"></div>
+                    <button class="hero-picker-close" type="button">&times;</button>
+                </div>
+                <div class="hero-picker-grid"></div>
+            </div>
+        `;
+        document.body.appendChild(popup);
+
+        const close = () => this.hideHeroPickerPopup();
+        popup.querySelector(".hero-picker-close")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            close();
+        });
+        popup.querySelector(".hero-picker-overlay")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            close();
+        });
+
+        return popup;
+    }
+
+    showHeroPickerPopup({ heroes, onPick, title, actions }) {
+        const popup = this.ensureHeroPickerPopup();
+        const grid = popup.querySelector(".hero-picker-grid");
+        if (!grid) return;
+
+        const titleEl = popup.querySelector(".hero-picker-header h3");
+        if (titleEl) titleEl.textContent = title || "เลือกฮีโร่ (Tier S)";
+
+        const actionsEl = popup.querySelector(".hero-picker-actions");
+        if (actionsEl) {
+            actionsEl.innerHTML = "";
+            (actions || []).forEach(action => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = `hero-picker-action ${action.className || ""}`.trim();
+                btn.textContent = action.label || "Action";
+                btn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    action.onClick?.();
+                });
+                actionsEl.appendChild(btn);
+            });
+        }
+
+        grid.innerHTML = "";
+
+        // Grouped rendering: Tier (S -> A -> ...) then Lane sections inside each tier.
+        const tierOrder = ["S", "A", "B", "C", "D", "E", "F"];
+        const laneOrder = ["mid", "abyssal", "support", "darkslayer", "jungle"];
+        const laneLabel = {
+            mid: "Mid",
+            abyssal: "Abyssal",
+            support: "Support",
+            darkslayer: "DarkSlayer",
+            jungle: "Jungle"
+        };
+
+        const picked = this.getPickedHeroNames();
+
+        const normalized = (heroes || [])
+            .filter(h => h && h.Hero)
+            .filter(h => !picked.has(h.Hero))
+            .map(h => ({
+                ...h,
+                _tier: (h.Tier || "").toString().trim().toUpperCase() || "?"
+            }));
+
+        const getPrimaryLaneKey = (laneRaw) => {
+            const lane = (laneRaw || "").toString().toLowerCase();
+            for (const key of laneOrder) {
+                if (lane.includes(key)) return key;
+            }
+            return "other";
+        };
+
+        const appendHeroItem = (heroObj) => {
+            const heroName = heroObj.Hero;
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "hero-picker-item";
+            btn.innerHTML = `
+                <img src="${import.meta.env.BASE_URL}asset/hero/${heroName}.webp" alt="${heroName}">
+                <span class="hero-picker-name">${heroName}</span>
+            `;
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onPick?.(heroName);
+            });
+            grid.appendChild(btn);
+        };
+
+        const appendDivider = (text) => {
+            const div = document.createElement("div");
+            div.className = "hero-picker-divider";
+            div.textContent = text;
+            grid.appendChild(div);
+        };
+
+        const appendTierHeader = (tier) => {
+            const div = document.createElement("div");
+            div.className = "hero-picker-tier";
+            div.textContent = `Tier ${tier}`;
+            grid.appendChild(div);
+        };
+
+        const tiersPresent = new Set(normalized.map(h => h._tier));
+        const tiersToRender = tierOrder.filter(t => tiersPresent.has(t));
+
+        tiersToRender.forEach((tier, tierIdx) => {
+            if (tierIdx > 0) {
+                // visual spacing between tiers
+                const spacer = document.createElement("div");
+                spacer.className = "hero-picker-spacer";
+                grid.appendChild(spacer);
+            }
+
+            appendTierHeader(tier);
+
+            const tierHeroes = normalized
+                .filter(h => h._tier === tier)
+                .sort((a, b) => this.compareHeroPriority(a, b));
+
+            // Group by lane
+            const byLane = new Map();
+            tierHeroes.forEach(h => {
+                const key = getPrimaryLaneKey(h.Lane);
+                if (!byLane.has(key)) byLane.set(key, []);
+                byLane.get(key).push(h);
+            });
+
+            laneOrder.forEach((laneKey, laneIdx) => {
+                const list = byLane.get(laneKey) || [];
+                if (list.length === 0) return;
+
+                if (laneIdx > 0) appendDivider(laneLabel[laneKey] || laneKey);
+                else appendDivider(laneLabel[laneKey] || laneKey);
+
+                list.forEach(appendHeroItem);
+            });
+        });
+
+        popup.style.display = "block";
+        setTimeout(() => popup.classList.add("show"), 10);
+    }
+
+    getPickedHeroNames() {
+        const gameWrapper = document.querySelector(`.game[data-index="${this.currentGameIndex}"]`);
+        const imgs = gameWrapper?.querySelectorAll("#team1-container .hero-choose img, #team2-container .hero-choose img");
+        const picked = new Set();
+        if (!imgs) return picked;
+
+        imgs.forEach(img => {
+            const name = (img.alt || "").toString().trim();
+            if (name) picked.add(name);
+        });
+        return picked;
+    }
+
+    hideHeroPickerPopup() {
+        const popup = document.querySelector(".hero-picker-popup");
+        if (!popup) return;
+        popup.classList.remove("show");
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 200);
+    }
+
+    getTeamNameFromBoxId(boxId) {
+        if (!boxId) return null;
+        // Slot ids end with team number: ...1 or ...2
+        const lastChar = boxId.toString().slice(-1);
+        if (lastChar === "1") return "team1";
+        if (lastChar === "2") return "team2";
+        return null;
+    }
+
+    getMissingLaneKeysForTeam(teamName) {
+        const gameWrapper = document.querySelector(`.game[data-index="${this.currentGameIndex}"]`);
+        const teamContainer = gameWrapper?.querySelector(`#${teamName}-container`);
+        const boxes = teamContainer?.querySelectorAll(".hero-choose");
+        if (!boxes) return new Set();
+
+        const missing = new Set();
+        boxes.forEach(box => {
+            const img = box.querySelector("img");
+            if (img && !img.alt) {
+                const id = (box.id || "").toString().toLowerCase();
+                // Map slot id to lane key (substring)
+                if (id.includes("mid")) missing.add("mid");
+                else if (id.includes("support")) missing.add("support");
+                else if (id.includes("jungle")) missing.add("jungle");
+                else if (id.includes("darkslayer")) missing.add("darkslayer");
+                else if (id.includes("abyssal")) missing.add("abyssal");
+            }
+        });
+        return missing;
     }
 
     /**
@@ -1152,10 +1371,11 @@ class DraftHelper {
         this.setStatRow(container, `เกมช่วง: ${this.getTimeLabel(team1Stats.time)}`, `เกมช่วง: ${this.getTimeLabel(team2Stats.time)}`);
         
         // Display hero images
+        const globalSeen = new Set();
         this.setStatRow(
             container,
-            this.createHeroImagesHTML(team1Heroes, "team1"),
-            this.createHeroImagesHTML(team2Heroes, "team2")
+            this.createHeroImagesHTML(team1Heroes, "team1", globalSeen),
+            this.createHeroImagesHTML(team2Heroes, "team2", globalSeen)
         );
 
         // Add click events to hero images
@@ -1167,8 +1387,18 @@ class DraftHelper {
     /**
      * Create HTML for hero images
      */
-    createHeroImagesHTML(heroes, teamClass) {
-        return heroes.map(hero => 
+    createHeroImagesHTML(heroes, teamClass, globalSeen = null) {
+        const localSeen = new Set();
+        const uniqueHeroes = (heroes || []).filter(h => {
+            if (!h) return false;
+            if (localSeen.has(h)) return false;
+            if (globalSeen && globalSeen.has(h)) return false;
+            localSeen.add(h);
+            if (globalSeen) globalSeen.add(h);
+            return true;
+        });
+
+        return uniqueHeroes.map(hero =>
             `<img src="${import.meta.env.BASE_URL}asset/hero/${hero}.webp" alt="${hero}" title="${hero}" 
                  style="width:32px;height:32px;vertical-align:middle;margin-right:4px;border:1px solid #888;border-radius:4px;cursor:pointer;" 
                  class="${teamClass}-hero-img">`
@@ -1180,7 +1410,6 @@ class DraftHelper {
      */
     addHeroImageClickEvents(container) {
         const imgs = container.querySelectorAll('.team1-hero-img, .team2-hero-img');
-        const gallery = document.querySelector(`.game[data-index="${this.currentGameIndex}"] #hero-gallery`);
 
         imgs.forEach(img => {
             img.addEventListener('click', () => {
@@ -1188,7 +1417,11 @@ class DraftHelper {
                 const heroObj = this.heroDataList.find(h => h.Hero === heroName);
                 const weaknessList = this.parseWeaknessList(heroObj?.Weakness || "");
                 const counterHeroes = this.getCounterHeroes(weaknessList);
-                this.initGallery(counterHeroes.length ? counterHeroes : [], gallery, true);
+                this.showHeroPickerPopup({
+                    heroes: this.sortHeroesByPriority(counterHeroes.filter(h => h?.Hero)),
+                    title: `Counter: ${heroName}`,
+                    onPick: () => this.hideHeroPickerPopup()
+                });
             });
         });
     }
@@ -1274,7 +1507,6 @@ class DraftHelper {
 
         this.gameContainer.appendChild(gameWrapper);
         this.bindEventsToGame(0);
-        this.initGallery(this.heroDataList);
         this.updateTeam();
     }
 
@@ -1297,112 +1529,15 @@ class DraftHelper {
                 <div class="team-section">
                     <div class="team-label2">Team 2</div>
                     <div id="team2-container">
-                        <div class="hero-choose" id="AbyssalDragon2"><img src="${import.meta.env.BASE_URL}asset/etc/AbyssalDragon.webp" data-default="${import.meta.env.BASE_URL}asset/etc/AbyssalDragon.webp"></div>
-                        <div class="hero-choose" id="Support2"><img src="${import.meta.env.BASE_URL}asset/etc/Support.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Support.webp"></div>
-                        <div class="hero-choose" id="Mid2"><img src="${import.meta.env.BASE_URL}asset/etc/Mid.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Mid.webp"></div>
-                        <div class="hero-choose" id="Jungle2"><img src="${import.meta.env.BASE_URL}asset/etc/Jungle.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Jungle.webp"></div>
                         <div class="hero-choose" id="DarkSlayer2"><img src="${import.meta.env.BASE_URL}asset/etc/DarkSlayer.webp" data-default="${import.meta.env.BASE_URL}asset/etc/DarkSlayer.webp"></div>
+                        <div class="hero-choose" id="Jungle2"><img src="${import.meta.env.BASE_URL}asset/etc/Jungle.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Jungle.webp"></div>
+                        <div class="hero-choose" id="Mid2"><img src="${import.meta.env.BASE_URL}asset/etc/Mid.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Mid.webp"></div>
+                        <div class="hero-choose" id="Support2"><img src="${import.meta.env.BASE_URL}asset/etc/Support.webp" data-default="${import.meta.env.BASE_URL}asset/etc/Support.webp"></div>
+                        <div class="hero-choose" id="AbyssalDragon2"><img src="${import.meta.env.BASE_URL}asset/etc/AbyssalDragon.webp" data-default="${import.meta.env.BASE_URL}asset/etc/AbyssalDragon.webp"></div>
                     </div>
                 </div>
             </div>
             <div class="content" id="content-0">
-                <div class="hero-select">
-                    <div class="quick-team-picker">
-                        <span class="quick-team-label">Quick Pick:</span>
-                        <button class="quick-team-btn team1" type="button">Team 1</button>
-                        <button class="quick-team-btn team2" type="button">Team 2</button>
-                    </div>
-                    <div id="lane-filter" style="margin-bottom: 10px;">
-                        <!-- Desktop Filter -->
-                        <div class="desktop-filter">
-                            <div class="filter-group">
-                                <h4>Lane:</h4>
-                                <label class="filter-checkbox"><input type="checkbox" data-lane="Abyssal"> Abyssal</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-lane="Support"> Support</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-lane="Mid"> Mid</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-lane="Jungle"> Jungle</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-lane="DarkSlayer"> Dark</label>
-                            </div>
-                            <div class="filter-group">
-                                <h4>Type:</h4>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="Early"> ต้น</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="Late"> เลท</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="burst"> เบิร์ส</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="cc"> CC</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="dulability"> แทงค์</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="waveclear"> เวฟเคลียร์</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="hardlock"> จับตาย</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="lock"> ล็อก</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="sight"> เปิดแมพ</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="push"> ผลัก</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="hook"> ดึง</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="charge"> ไถ</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="tierS"> แรงค์ S</label>
-                                <label class="filter-checkbox"><input type="checkbox" data-type="tierA"> แรงค์ A</label>
-                            </div>
-                        </div>
-                        
-                        <!-- Mobile Filter Menu -->
-                        <div class="mobile-filter-menu">
-                            <div class="filter-menu-bar">
-                                <button class="filter-menu-btn" data-target="lane-menu">
-                                    <span class="menu-icon">🎯</span>
-                                    <span class="menu-text">Lane</span>
-                                    <span class="menu-count" id="lane-count">0</span>
-                                </button>
-                                <button class="filter-menu-btn" data-target="type-menu">
-                                    <span class="menu-icon">⚡</span>
-                                    <span class="menu-text">Type</span>
-                                    <span class="menu-count" id="type-count">0</span>
-                                </button>
-                            </div>
-                            
-                            <!-- Lane Menu -->
-                            <div class="filter-menu-content" id="lane-menu">
-                                <div class="menu-header">
-                                    <h4>Lane Filter</h4>
-                                    <button class="menu-close">&times;</button>
-                                </div>
-                                <div class="menu-options">
-                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Abyssal"> Abyssal</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Support"> Support</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Mid"> Mid</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-lane="Jungle"> Jungle</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-lane="DarkSlayer"> Dark</label>
-                                </div>
-                            </div>
-                            
-                            <!-- Type Menu -->
-                            <div class="filter-menu-content" id="type-menu">
-                                <div class="menu-header">
-                                    <h4>Type Filter</h4>
-                                    <button class="menu-close">&times;</button>
-                                </div>
-                                <div class="menu-options">
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="Early"> ต้น</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="Late"> เลท</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="burst"> เบิร์ส</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="cc"> CC</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="dulability"> แทงค์</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="waveclear"> Wave</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="hardlock"> จับตาย</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="lock"> ล็อก</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="sight"> เปิดแมพ</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="push"> ผลัก</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="hook"> ดึง</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="charge"> ไถ</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="tierS"> S</label>
-                                    <label class="filter-checkbox"><input type="checkbox" data-type="tierA"> A</label>
-                                </div>
-                            </div>
-                            
-                            <!-- Overlay for mobile menu -->
-                            <div class="filter-menu-overlay" id="filter-overlay"></div>
-                        </div>
-                    </div>
-                    <input type="text" id="hero-search-0" placeholder="ค้นหาชื่อฮีโร่..." style="margin-bottom:10px;width:100%;max-width:300px;">
-                    <div id="hero-gallery" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
-                </div>
                 <div class="display"></div>
             </div>
         `;
