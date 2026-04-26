@@ -1,4 +1,4 @@
-﻿,Hero,Role,Lane,Damage Type,Time,Damage,Dulability,CC,Mobility,Tier,Ability,Weakness,หมายเหตุ
+﻿No.,Hero,Role,Lane,Damage Type,Time,Damage,Dulability,CC,Mobility,Tier,Ability,Weakness,หมายเหตุ
 1,Airi,Fighter/Assasin,DarkSlayer,True Damage,Mid/Late,5,1,2,2,A,Blood/CCResist/Dash/Shield/Stun,Soul_Scroll/,Damage เต็ม 5
 2,Aleister,Mage,Mid,Magic Damage,All,3,1,2,0,B,HardLock/Stun/Wave,Yue/Assasin,Dulability เต็ม 4
 3,Alice,Support,Mid/Support,Magic Damage,Late,4,1,3,1,A,Burst/Shield/Slow/Speed/Stun/Wave,Yue/Assasin,CC เต็ม 3
@@ -123,3 +123,5 @@
 122,Zill,Assasin,Jungle,Magic Damage,All,4,1,0,2,A,Dash/Disable,,
 123,Zip,Support,Support,Magic Damage,All,1,3,2,1,A,Dash/Shield/Speed/Stun,,
 124,Zuka,Fighter/Assasin,Jungle/DarkSlayer,Physical Damage,All,4,1,2,3,A,Burst/Dash/Stun,Soul_Scroll/Florentino,
+125,Flowborn_(Carry),Carry,Abyssal,Physical Damage,All,5,1,0,1,S,Range/Burst/Dash,Assasin,
+126,Flowborn_(Mage),Mage,Mid,Magic Damage,All,5,1,2,0,S,Range/Wave/Burst/Range,Assasin,
